@@ -22,3 +22,6 @@ af3_loss.md
 # 忽略输入输出文件
 output/
 Patents/
+
+# 忽略qwen_key
+qwen_key

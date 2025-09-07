@@ -7,7 +7,7 @@
 import hashlib
 import re
 from datetime import datetime
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -276,6 +276,45 @@ class SequenceRecord(BaseModel):
         # 验证赋值
         validate_assignment = True
         # JSON编码器
+        json_encoders = {
+            datetime: lambda v: v.isoformat()
+        }
+
+
+class ProcessingMetadata(BaseModel):
+    """处理元数据"""
+    
+    source_file: str = Field(..., description="源文件路径")
+    file_format: str = Field(..., description="文件格式")
+    processing_timestamp: str = Field(..., description="处理时间戳")
+    processor_version: str = Field(..., description="处理器版本")
+    total_sequences: int = Field(..., description="序列总数")
+    file_size_bytes: int = Field(..., description="文件大小（字节）")
+    md5_checksum: Optional[str] = Field(None, description="MD5校验和")
+    processing_duration_ms: Optional[float] = Field(None, description="处理耗时（毫秒）")
+
+
+class ProcessingStatistics(BaseModel):
+    """处理统计信息"""
+    
+    total_sequences: int = Field(..., description="序列总数")
+    total_residues: Optional[int] = Field(None, description="总残基数")
+    sequence_types: Dict[str, int] = Field(..., description="序列类型统计")
+    length_distribution: Optional[Dict[str, float]] = Field(None, description="长度分布统计")
+    validation_summary: Optional[Dict[str, Any]] = Field(None, description="验证汇总")
+
+
+class SequenceProcessingResult(BaseModel):
+    """序列处理结果"""
+    
+    status: str = Field(..., description="处理状态")
+    metadata: ProcessingMetadata = Field(..., description="处理元数据")
+    sequences: List[SequenceRecord] = Field(..., description="序列记录列表")
+    statistics: ProcessingStatistics = Field(..., description="统计信息")
+    processing_log: List[Dict[str, Any]] = Field(default_factory=list, description="处理日志")
+    
+    class Config:
+        """Pydantic配置"""
         json_encoders = {
             datetime: lambda v: v.isoformat()
         }

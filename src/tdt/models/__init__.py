@@ -1,50 +1,33 @@
 """
-TDT序列处理数据模型
-
-本模块包含用于序列数据处理的所有数据模型，基于Pydantic实现严格的类型检查和数据验证。
+TDT专利规则提取工具 - 数据模型模块
 """
 
-from .sequence_record import (
-    SequenceRecord,
-    SequenceData,
-    SequenceComposition,
-    SequenceAnalysis,
-    SequenceSource,
-    SequenceAnnotations,
-    SequenceValidation
+from .claims_models import (
+    ClaimItem, ClaimsDocument, MutationPattern, SeqIdReference,
+    SequenceClaimsMapping
 )
-
-from .processing_models import (
-    ProcessingMetadata,
-    ProcessingResult,
-    BatchProcessingResult,
-    ValidationResult,
-    ProcessingLog
-)
-
-from .format_models import (
-    SequenceFormat,
-    FormatDetectionResult
+from .rule_models import (
+    AvoidanceStrategy, ComplexityAnalysis, ComplexityLevel, MutationInfo,
+    MutationCombination, ProtectionRule, RuleGenerationResult, RuleType,
+    StandardizedRuleOutput
 )
 
 __all__ = [
-    # 序列记录相关
-    'SequenceRecord',
-    'SequenceData', 
-    'SequenceComposition',
-    'SequenceAnalysis',
-    'SequenceSource',
-    'SequenceAnnotations',
-    'SequenceValidation',
+    # Claims models
+    'ClaimItem',
+    'ClaimsDocument', 
+    'MutationPattern',
+    'SeqIdReference',
+    'SequenceClaimsMapping',
     
-    # 处理结果相关
-    'ProcessingMetadata',
-    'ProcessingResult',
-    'BatchProcessingResult',
-    'ValidationResult',
-    'ProcessingLog',
-    
-    # 格式相关
-    'SequenceFormat',
-    'FormatDetectionResult'
+    # Rule models
+    'AvoidanceStrategy',
+    'ComplexityAnalysis',
+    'ComplexityLevel',
+    'MutationInfo', 
+    'MutationCombination',
+    'ProtectionRule',
+    'RuleGenerationResult',
+    'RuleType',
+    'StandardizedRuleOutput',
 ]

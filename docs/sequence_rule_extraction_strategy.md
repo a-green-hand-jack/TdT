@@ -40,9 +40,11 @@
    - 包含SEQ ID NO引用和氨基酸位置信息
    - 详细的突变位点和组合描述
 
-2. **序列文件** (examples/seq/*.{FASTA,csv})
-   - FASTA格式：蛋白质序列数据
-   - CSV格式：包含序列ID、长度、类型和完整序列
+2. **标准化序列JSON文件** (output/sequences/*.json)
+   - 通过统一序列处理器生成的标准化JSON格式
+   - 包含完整的序列数据、元数据和分析信息
+   - 已完成格式识别、数据验证和组成分析
+   - 结构：metadata、sequences、statistics、processing_log
 
 3. **现有规则文件** (Patents/patent rules.xlsx)
    - 前人手工提取的规则模式
@@ -107,9 +109,9 @@
 数据流设计：
 Excel规则文件 ──→ JSON结构化数据 ──→ 规则模式分析
      ↓                                    ↓
-权利要求书 ────→ 序列信息提取 ────→ LLM规则生成Agent
+权利要求书 ────→ 权利要求解析 ────→ LLM规则生成Agent
      ↓                                    ↓
-序列文件 ──────→ 序列数据解析 ────→ 智能规则生成器
+标准化序列JSON ──→ 序列数据加载 ────→ 智能规则生成器
                                          ↓
                                    JSON/MD输出
 ```
@@ -131,19 +133,25 @@ class ExcelToJsonConverter:
         """导出JSON文件"""
 ```
 
-#### 2. 序列信息提取器
+#### 2. 数据加载器
 ```python
-class SequenceExtractor:
-    """从权利要求书和序列文件中提取信息"""
+class DataLoader:
+    """数据加载和预处理器"""
     
-    def extract_from_claims(self, md_path: str) -> ClaimsData:
-        """从权利要求书提取序列引用"""
+    def load_claims_markdown(self, md_path: str) -> ClaimsData:
+        """加载权利要求书Markdown文件"""
         
-    def extract_from_sequences(self, seq_path: str) -> SequenceData:
-        """从序列文件提取序列信息"""
+    def load_sequence_json(self, json_path: str) -> StandardizedSequenceData:
+        """加载标准化序列JSON文件"""
         
-    def identify_mutation_patterns(self, text: str) -> List[MutationPattern]:
-        """识别突变模式"""
+    def load_existing_rules(self, json_path: str) -> ExistingRulesData:
+        """加载现有规则JSON数据"""
+        
+    def extract_seq_id_references(self, claims_text: str) -> List[SeqIdReference]:
+        """从权利要求书中提取SEQ ID NO引用"""
+        
+    def identify_mutation_patterns(self, claims_text: str) -> List[MutationPattern]:
+        """识别突变模式和位点描述"""
 ```
 
 #### 3. LLM规则生成Agent
@@ -151,17 +159,20 @@ class SequenceExtractor:
 class LLMRuleAgent:
     """基于大语言模型的规则生成智能体"""
     
-    def analyze_patent_claims(self, claims_text: str, existing_rules: List[Dict]) -> AnalysisResult:
-        """分析权利要求书内容，识别保护模式"""
+    def analyze_patent_claims(self, claims_data: ClaimsData, 
+                              existing_rules: ExistingRulesData,
+                              sequence_data: StandardizedSequenceData) -> AnalysisResult:
+        """分析权利要求书内容，结合已有规则和序列数据"""
         
-    def extract_sequence_rules(self, analysis: AnalysisResult, 
-                              sequences: SequenceData) -> RuleExtractions:
-        """基于分析结果提取序列保护规则"""
+    def correlate_sequences_with_claims(self, seq_data: StandardizedSequenceData,
+                                       claims_data: ClaimsData) -> SequenceClaimsMapping:
+        """将标准化序列数据与权利要求进行关联"""
         
-    def generate_rule_json(self, extractions: RuleExtractions) -> Dict[str, Any]:
-        """生成标准化的JSON格式规则"""
+    def generate_protection_rules(self, mapping: SequenceClaimsMapping,
+                                 existing_rules: ExistingRulesData) -> RuleExtractions:
+        """基于关联结果生成保护规则"""
         
-    def evaluate_rule_complexity(self, rules: Dict) -> ComplexityReport:
+    def evaluate_rule_complexity(self, rules: RuleExtractions) -> ComplexityReport:
         """评估规则复杂度并提供表达建议"""
 ```
 
@@ -173,7 +184,9 @@ class IntelligentRuleGenerator:
     def __init__(self, llm_agent: LLMRuleAgent):
         """初始化，注入LLM Agent"""
         
-    def generate_rules_from_patent(self, patent_data: PatentData) -> GeneratedRules:
+    def generate_rules_from_patent(self, claims_path: str, 
+                                  sequence_json_path: str,
+                                  existing_rules_json_path: str) -> GeneratedRules:
         """从专利数据生成完整的保护规则"""
         
     def export_to_json(self, rules: GeneratedRules, path: str) -> None:
@@ -203,21 +216,26 @@ src/tdt/
 ├── __init__.py
 ├── core/
 │   ├── __init__.py
-│   ├── excel_converter.py    # Excel转JSON转换器
-│   ├── sequence_extractor.py # 序列信息提取器
+│   ├── excel_converter.py    # Excel转JSON转换器 ✅
+│   ├── data_loader.py        # 数据加载器（权利要求书+JSON序列）
 │   ├── llm_agent.py          # LLM规则生成Agent
 │   └── rule_generator.py     # 智能规则生成器
 ├── agents/
 │   ├── __init__.py
 │   ├── prompts.py            # LLM提示模板
 │   ├── rule_analyzer.py      # 规则分析Agent
-│   └── pattern_extractor.py  # 模式提取Agent
+│   └── sequence_correlator.py # 序列关联分析Agent
+├── models/
+│   ├── __init__.py
+│   ├── sequence_record.py    # 序列记录模型 ✅
+│   ├── claims_models.py      # 权利要求书数据模型
+│   └── rule_models.py        # 规则数据模型
 ├── utils/
 │   ├── __init__.py
 │   ├── data_structures.py    # 数据结构定义
 │   ├── validation.py         # 数据验证工具
 │   └── llm_utils.py          # LLM工具函数
-└── cli_rules.py              # 规则提炼命令行工具
+└── cli_rules.py              # 规则提炼命令行工具 ✅
 ```
 
 ## 实现计划
@@ -227,10 +245,11 @@ src/tdt/
 2. 建立标准化的数据结构
 3. 验证现有Excel文件的转换效果
 
-### 第二阶段：序列信息提取
-1. 开发权利要求书文本解析器
-2. 实现FASTA/CSV序列文件解析
-3. 构建突变模式识别算法
+### 第二阶段：数据加载和预处理
+1. 开发权利要求书Markdown解析器
+2. 实现标准化序列JSON加载器
+3. 构建SEQ ID NO引用识别算法
+4. 开发突变模式识别算法
 
 ### 第三阶段：LLM Agent开发
 1. 设计专利规则分析的提示模板
@@ -257,11 +276,11 @@ src/tdt/
 - [x] 验证现有Excel文件解析
 - [x] 建立数据验证机制
 
-### 序列分析
-- [ ] 开发权利要求书解析器
-- [ ] 实现FASTA文件解析
-- [ ] 实现CSV序列文件解析
-- [ ] 构建突变模式识别
+### 数据加载和预处理
+- [ ] 开发权利要求书Markdown解析器
+- [ ] 实现标准化序列JSON加载器
+- [ ] 构建SEQ ID NO引用识别算法
+- [ ] 开发突变模式识别算法
 
 ### LLM Agent开发
 - [ ] 设计专利分析提示模板
@@ -317,6 +336,77 @@ src/tdt/
 3. **序列匹配准确性**：确保SEQ ID NO与实际序列的正确对应
 4. **输出格式标准化**：保持与现有Excel文件的兼容性
 
+## 标准化序列JSON输入格式
+
+### 现有序列JSON结构说明
+基于统一序列处理器生成的标准化格式：
+
+```json
+{
+  "status": "success",
+  "metadata": {
+    "source_file": "examples/seq/CN202210107337.FASTA",
+    "file_format": "fasta",
+    "processing_timestamp": "2025-09-07 14:14:12.552426",
+    "processor_version": "1.0.0",
+    "total_sequences": 1,
+    "file_size_bytes": 543,
+    "md5_checksum": "1f786829b8944a3d1fda4008f1bdaf4d",
+    "processing_duration_ms": 0.997
+  },
+  "sequences": [
+    {
+      "sequence_id": "ZaTdT",
+      "sequence_name": "ZaTdT", 
+      "description": "",
+      "source": {
+        "file_path": "examples/seq/CN202210107337.FASTA",
+        "file_format": "fasta",
+        "original_header": ">ZaTdT",
+        "extraction_timestamp": "2025-09-07 14:14:12.552248"
+      },
+      "sequence_data": {
+        "raw_sequence": "MHHHHHHDRFKAPAV...",
+        "cleaned_sequence": "MHHHHHHDRFKAPAV...",
+        "length": 519,
+        "molecular_type": "protein",
+        "checksum": "be85e880a1d00a01",
+        "composition": {
+          "composition": {"M": 16, "H": 14, "D": 30, "R": 35, ...},
+          "most_frequent": "L",
+          "least_frequent": "C",
+          "total_residues": 519
+        }
+      },
+      "analysis": {
+        "molecular_weight_da": 58239.81,
+        "isoelectric_point": 8.82,
+        "extinction_coefficient": 31440,
+        "instability_index": 42.37,
+        "aliphatic_index": 84.49,
+        "gravy": -0.198
+      },
+      "validation": {
+        "is_valid": true,
+        "validation_errors": [],
+        "warnings": []
+      }
+    }
+  ],
+  "statistics": {
+    "total_sequences": 1,
+    "sequence_types": {"protein": 1},
+    "length_stats": {"min": 519, "max": 519, "mean": 519.0}
+  }
+}
+```
+
+### 输入数据的优势
+1. **完整性**：包含序列的所有必要信息和分析结果
+2. **标准化**：统一的JSON格式，便于程序解析
+3. **验证完成**：已通过数据验证，无需重复检查
+4. **丰富元数据**：包含分子量、等电点等生化分析信息
+
 ## JSON输出格式设计
 
 ### 标准化规则JSON结构
@@ -369,11 +459,13 @@ src/tdt/
 ```
 
 ### LLM Agent工作流程
-1. **专利文本理解**：分析权利要求书的法律语言和技术描述
-2. **序列模式识别**：识别SEQ ID NO引用和突变位点描述
-3. **规则复杂度评估**：判断规则的复杂程度和表达难度
-4. **回避策略生成**：基于理解生成具体的技术回避建议
-5. **JSON格式输出**：将所有分析结果结构化为标准JSON
+1. **数据加载**：加载权利要求书、标准化序列JSON和现有规则数据
+2. **序列关联**：将权利要求书中的SEQ ID NO与标准化序列数据进行匹配
+3. **专利文本理解**：分析权利要求书的法律语言和技术描述
+4. **突变模式识别**：识别突变位点描述和保护范围
+5. **规则复杂度评估**：判断规则的复杂程度和表达难度
+6. **回避策略生成**：基于理解生成具体的技术回避建议
+7. **JSON格式输出**：将所有分析结果结构化为标准JSON
 
 ### 成功标准
 1. 能够准确转换现有Excel规则文件

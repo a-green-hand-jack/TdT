@@ -15,6 +15,7 @@ dependencies = [
     "pandas>=2.3.2",
     "openpyxl>=3.1.5",
     "biopython>=1.85",
+    "pydantic>=2.5.0",
 ]
 
 [project.optional-dependencies]
@@ -29,6 +30,7 @@ dev = [
 [project.scripts]
 tdt-extract = "tdt.cli:main"
 tdt-rules = "tdt.cli_rules:cli"
+tdt-seq = "tdt.cli_sequences:cli"
 
 [build-system]
 requires = ["hatchling"]

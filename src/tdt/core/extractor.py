@@ -219,6 +219,9 @@ class ClaimsExtractor:
         # 清理多余的空行
         content = re.sub(r'\n{3,}', '\n\n', content)
         
+        # 最后再次清理可能残留的页脚数字（特别是在末尾的4位数字）
+        content = self._final_cleanup_footers(content)
+        
         return content.strip()
     
     def _light_clean_headers(self, content: str) -> str:
@@ -259,7 +262,41 @@ class ClaimsExtractor:
         
         return '\n'.join(clean_lines)
     
-    
+    def _final_cleanup_footers(self, content: str) -> str:
+        """
+        最终清理页脚信息，特别处理可能残留在末尾的页脚数字。
+
+        Args:
+            content: 待清理的内容
+
+        Returns:
+            清理后的内容
+        """
+        logging.info("开始最终页脚清理")
+        lines = content.split('\n')
+        clean_lines = []
+        removed_count = 0
+
+        for line in lines:
+            line_stripped = line.strip()
+
+            # 移除末尾出现的纯数字页脚（2-6位数字）
+            if re.match(r'^\d{2,6}$', line_stripped):
+                logging.info(f"移除数字页脚: {line_stripped}")
+                removed_count += 1
+                continue
+
+            # 处理行末尾的页脚数字 - 移除以空格+数字结尾的模式
+            if re.search(r'\s+\d{2,6}$', line):
+                original_line = line
+                line = re.sub(r'\s+\d{2,6}$', '', line)
+                logging.info(f"移除行末页脚: 原行长度 {len(original_line)}, 清理后长度 {len(line)}")
+                removed_count += 1
+
+            clean_lines.append(line)
+
+        logging.info(f"最终页脚清理完成，移除了 {removed_count} 个页脚")
+        return '\n'.join(clean_lines)
     
     def save_claims(
         self,

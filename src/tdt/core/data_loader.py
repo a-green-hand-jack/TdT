@@ -285,15 +285,23 @@ class DataLoader:
         """从内容中提取专利号"""
         # 尝试多种专利号模式
         patterns = [
-            r'专利申请公布号：?\s*([A-Z]{2}\s*\d+\s*[A-Z])',
-            r'Patent\s+No\.?\s*:?\s*([A-Z]{2}\s*\d+\s*[A-Z])',
-            r'([A-Z]{2}\s*\d+\s*[A-Z])',
+            # 专利申请公布号：CN 202210107337 或 CN118284690A
+            r'专利申请公布号：?\s*([A-Z]{2}\s*\d+(?:\s*[A-Z])?)',
+            # Patent No.: CN118284690A
+            r'Patent\s+No\.?\s*:?\s*([A-Z]{2}\s*\d+(?:\s*[A-Z])?)',
+            # 通用模式：CN118284690A 或 CN 202210107337
+            r'([A-Z]{2}\s*\d+(?:\s*[A-Z])?)',
         ]
         
         for pattern in patterns:
             match = re.search(pattern, content, re.IGNORECASE)
             if match:
-                return match.group(1).strip()
+                # 清理空格并返回
+                patent_number = match.group(1).strip()
+                # 规范化格式：确保国家代码和数字之间有空格
+                if re.match(r'^[A-Z]{2}\d', patent_number):
+                    patent_number = patent_number[:2] + ' ' + patent_number[2:]
+                return patent_number
         
         return "UNKNOWN"
     

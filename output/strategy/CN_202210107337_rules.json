@@ -1,0 +1,42 @@
+{
+  "patent_number": "CN 202210107337",
+  "group": 1,
+  "rules": [
+    {
+      "wild_type": "SEQ_ID_NO_1",
+      "rule": "identity>95",
+      "mutation": "Y178A/F186R/I210L/V211A",
+      "mutation_logic": "(Y178A & F186R & I210L & V211A)",
+      "identity_logic": "seq_identity >= 95%",
+      "statement": "保护与SEQ ID NO:1具有至少95%同一性且包含Y178A、F186R、I210L、V211A突变的工程化末端脱氧核苷酸转移酶",
+      "comment": "核心保护规则，基于固定突变组合和序列同一性下限"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_1",
+      "rule": "conditional",
+      "mutation": "Y178A/F186R/I210L/V211A/K220E/A225V/D230N/R235K",
+      "mutation_logic": "(Y178A & F186R & I210L & V211A) & (K220E | A225V | D230N | R235K)",
+      "identity_logic": "seq_identity >= 95%",
+      "statement": "在基础突变(Y178A、F186R、I210L、V211A)基础上，进一步包含K220E、A225V、D230N或R235K中任意一个突变的工程化末端脱氧核苷酸转移酶",
+      "comment": "附加突变的可选扩展保护"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_1",
+      "rule": "identity>98",
+      "mutation": "Y178A/F186R/I210L/V211A",
+      "mutation_logic": "(Y178A & F186R & I210L & V211A)",
+      "identity_logic": "seq_identity >= 98%",
+      "statement": "保护与SEQ ID NO:1具有至少98%同一性且包含Y178A、F186R、I210L、V211A突变的工程化末端脱氧核苷酸转移酶",
+      "comment": "更高序列同一性要求的强化保护"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_2",
+      "rule": "identity>90",
+      "mutation": "",
+      "mutation_logic": "",
+      "identity_logic": "nucleotide_seq_identity >= 90%",
+      "statement": "保护与SEQ ID NO:2具有至少90%同一性的编码多核苷酸",
+      "comment": "针对编码序列的独立保护规则"
+    }
+  ]
+}

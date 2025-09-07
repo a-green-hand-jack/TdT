@@ -1,4 +1,4 @@
-# 忽略 .zip 文件
+# 忽略 .zip,文件
 *.zip
 **/*.zip
 
@@ -20,7 +20,7 @@
 # 临时忽略
 af3_loss.md
 # 忽略输入输出文件
-output/
+# output/
 Patents/
 
 # 忽略qwen_key

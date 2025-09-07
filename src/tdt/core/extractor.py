@@ -50,6 +50,9 @@ class ClaimsExtractor:
             logger.warning("未找到权利要求书章节")
             return None
         
+        # 记录源页面信息供后续使用
+        self._source_pages = [page['page_number'] for page in claims_pages]
+        
         # 提取并合并内容
         claims_content = self._merge_claims_content(claims_pages)
         
@@ -195,102 +198,54 @@ class ClaimsExtractor:
     
     def _format_for_readability(self, content: str) -> str:
         """
-        格式化内容以便人类阅读和内容对比。
+        格式化内容以便人类阅读，保持原文准确性。
         
         Args:
             content: 内容文本
             
         Returns:
-            格式化后的易读内容
+            格式化后的内容，仅进行权利要求编号分离
         """
-        # 首先处理页面标记
-        content = re.sub(r'<!-- 第 (\d+) 页 -->', r'\n\n---\n### 第 \1 页\n\n', content)
+        # 移除页面标记，不在正文中显示
+        content = re.sub(r'<!-- 第 \d+ 页 -->\s*', '', content)
         
-        # 预处理：在权利要求编号前插入换行符，以便正确分离
-        # 这里要处理可能出现在行中间的权利要求编号
-        content = re.sub(r'(\s+)(\d+)\.\s+', r'\1\n\n\2. ', content)
+        # 轻度清理页眉，仅移除明显的页眉行
+        content = self._light_clean_headers(content)
         
-        # 现在按行处理
-        lines = content.split('\n')
-        formatted_lines = []
-        current_claim_content = []
-        current_claim_num = None
+        # 仅进行权利要求编号的分离，使用更简单的方法
+        # 直接用正则表达式在权利要求编号前添加标题
+        content = re.sub(r'(\n|^)(\d+)\.\s*', r'\1\n## \2. ', content)
         
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-            
-            # 检查是否是权利要求编号开始（现在应该在独立行了）
-            claim_match = re.match(r'^(\d+)\.\s*(.*)$', line)
-            if claim_match:
-                # 如果有之前的权利要求，先处理完
-                if current_claim_num and current_claim_content:
-                    formatted_lines.append(f"\n## 权利要求 {current_claim_num}\n")
-                    formatted_lines.append(self._format_claim_content('\n'.join(current_claim_content)))
-                
-                # 开始新的权利要求
-                current_claim_num = claim_match.group(1)
-                remaining_content = claim_match.group(2).strip()
-                current_claim_content = [remaining_content] if remaining_content else []
-            elif current_claim_num:
-                # 继续当前权利要求的内容
-                current_claim_content.append(line)
-            else:
-                # 不属于任何权利要求的内容（如页眉）
-                formatted_lines.append(line)
+        # 清理多余的空行
+        content = re.sub(r'\n{3,}', '\n\n', content)
         
-        # 处理最后一个权利要求
-        if current_claim_num and current_claim_content:
-            formatted_lines.append(f"\n## 权利要求 {current_claim_num}\n")
-            formatted_lines.append(self._format_claim_content('\n'.join(current_claim_content)))
-        
-        # 合并结果并清理
-        result = '\n'.join(formatted_lines)
-        result = re.sub(r'\n{3,}', '\n\n', result)
-        
-        return result.strip()
+        return content.strip()
     
-    def _format_claim_content(self, claim_text: str) -> str:
+    def _light_clean_headers(self, content: str) -> str:
         """
-        格式化单个权利要求的内容。
+        轻度清理页眉信息，只移除明显的页眉行。
         
         Args:
-            claim_text: 权利要求文本
+            content: 原始内容
             
         Returns:
-            格式化后的权利要求内容
+            轻度清理后的内容
         """
-        if not claim_text:
-            return ""
-        
-        lines = claim_text.split('\n')
-        formatted_lines = []
+        lines = content.split('\n')
+        clean_lines = []
         
         for line in lines:
-            line = line.strip()
-            if not line:
+            line_stripped = line.strip()
+            
+            # 移除页眉行：仅移除完全匹配的页眉标题行
+            if line_stripped == '权 利 要 求 书':
                 continue
             
-            # 检查是否是从属权利要求的引用
-            if '根据权利要求' in line:
-                formatted_lines.append(f"**依据：** {line}")
-            # 检查是否包含特征描述
-            elif '其特征在于' in line:
-                formatted_lines.append(f"**特征：** {line}")
-            # 检查是否是选择性描述
-            elif line.startswith(('优选地', '更优选地', '特别地', '进一步地')):
-                formatted_lines.append(f"*{line}*")
-            # 检查是否是技术参数或序列信息
-            elif any(param in line for param in ['X1', 'X2', 'X3', 'X4', 'X5', 'SEQ ID', '表示选自']):
-                formatted_lines.append(f"- {line}")
-            # 检查是否是氨基酸位点信息
-            elif re.search(r'[A-Z]\d+[A-Z]?', line) and any(char in line for char in ['、', ',']):
-                formatted_lines.append(f"**位点：** {line}")
-            else:
-                formatted_lines.append(line)
+            clean_lines.append(line)
         
-        return '\n\n'.join(formatted_lines)
+        return '\n'.join(clean_lines)
+    
+    
     
     def save_claims(
         self,
@@ -339,7 +294,7 @@ class ClaimsExtractor:
     
     def _prepare_markdown_content(self, content: str, pdf_path: str) -> str:
         """
-        准备Markdown格式的内容。
+        准备Markdown格式的内容，在文件头包含详细源信息。
         
         Args:
             content: 权利要求书内容
@@ -350,9 +305,17 @@ class ClaimsExtractor:
         """
         pdf_name = Path(pdf_path).name
         
-        markdown_content = f"""# 权利要求书 - {pdf_name}
+        # 尝试从内容中提取专利信息
+        patent_info = self._extract_patent_info(content)
+        
+        markdown_content = f"""# 权利要求书
 
-> 从专利文件 `{pdf_name}` 中提取的权利要求书内容
+## 文档信息
+
+**源文件：** `{pdf_name}`  
+**专利申请公布号：** {patent_info.get('patent_number', '未识别')}  
+**提取页面：** {patent_info.get('pages', '第2-3页')}  
+**提取时间：** {patent_info.get('extract_time', '自动生成')}  
 
 ---
 
@@ -363,6 +326,41 @@ class ClaimsExtractor:
 *此文档由 TDT 专利序列提取工具自动生成*
 """
         return markdown_content
+    
+    def _extract_patent_info(self, content: str) -> dict:
+        """
+        从内容中提取专利基本信息。
+        
+        Args:
+            content: 权利要求书内容
+            
+        Returns:
+            包含专利信息的字典
+        """
+        import datetime
+        
+        info = {
+            'extract_time': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        
+        # 尝试提取专利号
+        patent_match = re.search(r'CN\s*\d+\s*[A-Z]', content)
+        if patent_match:
+            info['patent_number'] = patent_match.group().replace(' ', '')
+        else:
+            info['patent_number'] = '未识别'
+        
+        # 尝试确定页面范围（从页面数据中推断）
+        if hasattr(self, '_source_pages') and self._source_pages:
+            pages = [str(p) for p in sorted(self._source_pages)]
+            if len(pages) == 1:
+                info['pages'] = f"第{pages[0]}页"
+            else:
+                info['pages'] = f"第{pages[0]}-{pages[-1]}页"
+        else:
+            info['pages'] = '未知页面范围'
+        
+        return info
     
     def _prepare_text_content(self, content: str, pdf_path: str) -> str:
         """

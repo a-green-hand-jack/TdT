@@ -4,6 +4,7 @@
 负责从解析后的PDF页面中提取并格式化权利要求书内容。
 """
 import logging
+import re
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -173,7 +174,7 @@ class ClaimsExtractor:
     
     def _format_claims_content(self, raw_content: str) -> str:
         """
-        格式化权利要求书内容。
+        格式化权利要求书内容，便于人类阅读和内容对比。
         
         Args:
             raw_content: 原始内容文本
@@ -187,22 +188,83 @@ class ClaimsExtractor:
         # 标准化文本
         normalized_content = normalize_text(cleaned_content)
         
-        # 添加结构化标记
-        formatted_content = self._add_structure_markers(normalized_content)
+        # 添加结构化标记和格式化
+        formatted_content = self._format_for_readability(normalized_content)
         
         return formatted_content
     
-    def _add_structure_markers(self, content: str) -> str:
+    def _format_for_readability(self, content: str) -> str:
         """
-        为内容添加结构化标记，便于LLM理解。
+        格式化内容以便人类阅读和内容对比。
         
         Args:
             content: 内容文本
             
         Returns:
-            添加标记后的内容
+            格式化后的易读内容
         """
+        # 首先处理页面标记
+        content = re.sub(r'<!-- 第 (\d+) 页 -->', r'\n\n---\n### 第 \1 页\n\n', content)
+        
+        # 预处理：在权利要求编号前插入换行符，以便正确分离
+        # 这里要处理可能出现在行中间的权利要求编号
+        content = re.sub(r'(\s+)(\d+)\.\s+', r'\1\n\n\2. ', content)
+        
+        # 现在按行处理
         lines = content.split('\n')
+        formatted_lines = []
+        current_claim_content = []
+        current_claim_num = None
+        
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+            
+            # 检查是否是权利要求编号开始（现在应该在独立行了）
+            claim_match = re.match(r'^(\d+)\.\s*(.*)$', line)
+            if claim_match:
+                # 如果有之前的权利要求，先处理完
+                if current_claim_num and current_claim_content:
+                    formatted_lines.append(f"\n## 权利要求 {current_claim_num}\n")
+                    formatted_lines.append(self._format_claim_content('\n'.join(current_claim_content)))
+                
+                # 开始新的权利要求
+                current_claim_num = claim_match.group(1)
+                remaining_content = claim_match.group(2).strip()
+                current_claim_content = [remaining_content] if remaining_content else []
+            elif current_claim_num:
+                # 继续当前权利要求的内容
+                current_claim_content.append(line)
+            else:
+                # 不属于任何权利要求的内容（如页眉）
+                formatted_lines.append(line)
+        
+        # 处理最后一个权利要求
+        if current_claim_num and current_claim_content:
+            formatted_lines.append(f"\n## 权利要求 {current_claim_num}\n")
+            formatted_lines.append(self._format_claim_content('\n'.join(current_claim_content)))
+        
+        # 合并结果并清理
+        result = '\n'.join(formatted_lines)
+        result = re.sub(r'\n{3,}', '\n\n', result)
+        
+        return result.strip()
+    
+    def _format_claim_content(self, claim_text: str) -> str:
+        """
+        格式化单个权利要求的内容。
+        
+        Args:
+            claim_text: 权利要求文本
+            
+        Returns:
+            格式化后的权利要求内容
+        """
+        if not claim_text:
+            return ""
+        
+        lines = claim_text.split('\n')
         formatted_lines = []
         
         for line in lines:
@@ -210,19 +272,25 @@ class ClaimsExtractor:
             if not line:
                 continue
             
-            # 识别权利要求条目
-            if line.startswith(('1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.')):
-                formatted_lines.append(f"\n## {line}")
-            # 识别子条目
-            elif line.startswith(('(1)', '(2)', '(3)', '(4)', '(5)')):
+            # 检查是否是从属权利要求的引用
+            if '根据权利要求' in line:
+                formatted_lines.append(f"**依据：** {line}")
+            # 检查是否包含特征描述
+            elif '其特征在于' in line:
+                formatted_lines.append(f"**特征：** {line}")
+            # 检查是否是选择性描述
+            elif line.startswith(('优选地', '更优选地', '特别地', '进一步地')):
+                formatted_lines.append(f"*{line}*")
+            # 检查是否是技术参数或序列信息
+            elif any(param in line for param in ['X1', 'X2', 'X3', 'X4', 'X5', 'SEQ ID', '表示选自']):
                 formatted_lines.append(f"- {line}")
-            # 识别页面标记
-            elif line.startswith('<!-- 第') and line.endswith('页 -->'):
-                formatted_lines.append(f"\n{line}\n")
+            # 检查是否是氨基酸位点信息
+            elif re.search(r'[A-Z]\d+[A-Z]?', line) and any(char in line for char in ['、', ',']):
+                formatted_lines.append(f"**位点：** {line}")
             else:
                 formatted_lines.append(line)
         
-        return '\n'.join(formatted_lines)
+        return '\n\n'.join(formatted_lines)
     
     def save_claims(
         self,

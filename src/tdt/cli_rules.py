@@ -164,7 +164,7 @@ def analyze_rules(json_file: Path):
 @click.option('--output-dir', '-o', type=click.Path(path_type=Path), 
               default=Path('output/rules'), help='输出目录')
 @click.option('--api-key', type=str, help='Qwen API密钥（可从环境变量QWEN_API_KEY读取）')
-@click.option('--model', default='qwen-plus', help='使用的Qwen模型')
+@click.option('--model', default='qwen3-max-preview', help='使用的Qwen模型')
 @click.option('--export-markdown', is_flag=True, help='同时导出Markdown格式')
 def generate_rules(claims_file: Path, sequence_file: Path, rules_file: Path,
                   output_dir: Path, api_key: str, model: str, export_markdown: bool):

@@ -33,7 +33,7 @@ class QwenAPIError(Exception):
 class LLMRuleAgent:
     """基于Qwen的规则生成智能体"""
     
-    def __init__(self, api_key: Optional[str] = None, model: str = "qwen-plus"):
+    def __init__(self, api_key: Optional[str] = None, model: str = "qwen3-max-preview"):
         """初始化LLM Agent
         
         Args:

@@ -170,8 +170,15 @@ def generate_rules(claims_file: Path, sequence_file: Path, rules_file: Path,
     SEQUENCE_FILE: 标准化序列JSON文件  
     RULES_FILE: 现有规则JSON文件
     """
+    import os
+    import json
+    
     try:
         from .core.rule_generator import IntelligentRuleGenerator
+        
+        # 从环境变量读取API密钥（如果未通过参数提供）
+        if not api_key:
+            api_key = os.getenv('QWEN_API_KEY') or os.getenv('OPENAI_API_KEY')
         
         click.echo(f"🧬 开始生成专利保护规则")
         click.echo(f"权利要求书: {claims_file}")
@@ -182,15 +189,15 @@ def generate_rules(claims_file: Path, sequence_file: Path, rules_file: Path,
         # 创建规则生成器
         if api_key:
             generator = IntelligentRuleGenerator.create_with_qwen(api_key=api_key, model=model)
+            # 测试连接
+            click.echo("🔗 测试LLM连接...")
+            if not generator.llm_agent.test_connection():
+                click.echo("❌ LLM连接失败，请检查API密钥和网络连接", err=True)
+                sys.exit(1)
+            click.echo("✅ LLM连接成功")
         else:
+            click.echo("⚠️  未提供API密钥，使用演示模式")
             generator = IntelligentRuleGenerator.create_with_qwen(model=model)
-        
-        # 测试连接
-        click.echo("🔗 测试LLM连接...")
-        if not generator.llm_agent.test_connection():
-            click.echo("❌ LLM连接失败，请检查API密钥和网络连接", err=True)
-            sys.exit(1)
-        click.echo("✅ LLM连接成功")
         
         # 生成规则
         click.echo("🔍 分析专利数据...")
@@ -207,15 +214,24 @@ def generate_rules(claims_file: Path, sequence_file: Path, rules_file: Path,
         patent_number = result.patent_number.replace(' ', '_').replace('/', '_')
         json_output = output_dir / f"{patent_number}_rules.json"
         
-        # 导出JSON
-        click.echo("📄 导出JSON格式规则...")
-        generator.export_to_json(result, str(json_output))
+        # 导出简化JSON格式
+        click.echo("📄 导出简化JSON格式规则...")
+        raw_llm_response = getattr(result, 'raw_llm_response', None)
+        generator.export_simplified_json(result, str(json_output), raw_llm_response)
+        
+        # 读取简化JSON用于Markdown生成
+        simplified_data = None
+        try:
+            with open(json_output, 'r', encoding='utf-8') as f:
+                simplified_data = json.load(f)
+        except Exception as e:
+            click.echo(f"⚠️ 简化JSON读取失败: {e}")
         
         # 导出Markdown（可选）
         if export_markdown:
             md_output = output_dir / f"{patent_number}_rules.md"
-            click.echo("📝 导出Markdown格式文档...")
-            generator.export_to_markdown(result, str(md_output))
+            click.echo("📝 导出简化Markdown格式文档...")
+            generator.export_to_markdown(result, str(md_output), simplified_data)
         
         # 显示结果摘要
         click.echo("")
@@ -242,10 +258,21 @@ def generate_rules(claims_file: Path, sequence_file: Path, rules_file: Path,
 @click.option('--model', default='qwen-plus', help='测试的模型')
 def test_llm(api_key: str, model: str):
     """测试LLM连接"""
+    import os
+    
     try:
         from .core.llm_agent import LLMRuleAgent
         
+        # 从环境变量读取API密钥（如果未通过参数提供）
+        if not api_key:
+            api_key = os.getenv('QWEN_API_KEY') or os.getenv('OPENAI_API_KEY')
+        
         click.echo(f"🔗 测试LLM连接 (模型: {model})")
+        
+        if not api_key:
+            click.echo("⚠️  未提供API密钥，演示模式下无需连接测试")
+            click.echo("💡 设置环境变量 QWEN_API_KEY 或使用 --api-key 参数")
+            return
         
         agent = LLMRuleAgent(api_key=api_key, model=model)
         

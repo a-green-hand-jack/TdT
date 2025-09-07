@@ -8,7 +8,7 @@
 
 本项目旨在从 TDT 酶相关的专利文件中提取受保护的序列，并将这些序列以规则的形式记录在 Excel 文件中。如果规则过于复杂，则使用文字描述；如果规则复杂但受保护的序列较少，则直接罗列这些序列。
 
-**当前状态：✅ 权利要求书提取工具 + 统一序列处理器已完成开发**
+**当前状态：✅ 权利要求书提取工具 + 统一序列处理器 + 智能规则提取Agent已完成开发**
 
 ## 🚀 核心功能
 
@@ -26,7 +26,15 @@
 - 🗂️ 标准化JSON输出，便于LLM处理
 - ⚡ 高性能批量处理
 
-### 3. **命令行工具**
+### 3. **智能规则提取Agent** 🤖
+
+- 🧠 基于大语言模型的专利规则分析
+- 🎯 聚焦序列保护范围识别
+- ⚙️ 逻辑表达式描述突变规则
+- 📄 简化JSON格式，便于程序处理
+- 🔄 自动生成JSON和Markdown报告
+
+### 4. **命令行工具**
 
 ```bash
 # PDF权利要求书提取
@@ -39,17 +47,23 @@ tdt-seq info         # 显示序列文件信息
 tdt-seq process      # 处理单个序列文件
 tdt-seq batch        # 批量处理序列文件
 tdt-seq formats      # 显示支持的格式
+
+# 智能规则提取（NEW! 🆕）
+tdt-rules generate   # 生成专利保护规则
+tdt-rules test-llm   # 测试LLM连接
 ```
 
-### 4. **输出格式**
+### 5. **输出格式**
 
 - 📝 **Markdown格式**：结构化权利要求书，便于LLM处理
 - 📄 **纯文本格式**：简洁，便于人工阅读
 - 🗂️ **标准化JSON**：序列数据的统一格式，包含完整元数据
 - 🏷️ **文件信息**：保留原文件名、专利号、提取时间
 - 🎯 **LLM友好**：优化格式，便于后续AI分析
+- 🔬 **简化规则JSON**：专利保护规则的逻辑表达式格式
+- 📊 **分析报告**：智能分析结果的Markdown报告
 
-### 5. **技术特性**
+### 6. **技术特性**
 
 - ⚡ **轻量化实现**：专注文本提取，无图像处理
 - 🔧 **uv包管理**：现代Python依赖管理
@@ -57,6 +71,8 @@ tdt-seq formats      # 显示支持的格式
 - 🧪 **健壮性**：全面的错误处理和日志记录
 - 🔬 **智能识别**：多重启发式算法确保95%+格式识别准确率
 - 📊 **数据验证**：基于Pydantic v2的严格类型验证
+- 🤖 **LLM集成**：支持Qwen等大语言模型的智能分析
+- 🔄 **容错机制**：多层JSON解析策略，确保文件自动生成
 
 ## 📦 安装和使用
 
@@ -64,6 +80,7 @@ tdt-seq formats      # 显示支持的格式
 
 - Python 3.10+
 - uv 包管理器
+- OpenAI API兼容的LLM服务（用于智能规则提取）
 
 ### 安装依赖
 
@@ -77,6 +94,27 @@ uv sync
 
 # 开发模式安装
 uv pip install -e .
+```
+
+### 环境配置
+
+#### LLM服务配置（智能规则提取功能）
+
+创建 `.env` 文件配置LLM服务：
+
+```bash
+# 对于Qwen Plus（推荐）
+QWEN_API_KEY=your-api-key-here
+QWEN_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+
+# 或者使用其他OpenAI兼容的服务
+OPENAI_API_KEY=your-api-key-here
+OPENAI_BASE_URL=https://api.openai.com/v1
+```
+
+**获取API密钥：**
+- Qwen：访问 [阿里云百炼平台](https://bailian.console.aliyun.com/)
+- OpenAI：访问 [OpenAI Platform](https://platform.openai.com/)
 ```
 
 ### 使用示例
@@ -116,6 +154,31 @@ uv run tdt-seq formats
 
 # 转换序列文件为JSON（输出到标准输出）
 uv run tdt-seq convert examples/seq/CN118284690A.csv --pretty
+```
+
+##### 智能规则提取（🆕 新功能）
+
+```bash
+# 测试LLM连接
+uv run tdt-rules test-llm
+
+# 生成专利保护规则（完整流程）
+uv run tdt-rules generate \
+  --claims examples/md/CN202210107337_claims.md \
+  --sequences examples/seq/CN202210107337.json \
+  --existing-rules Patents/patent_rules_rules.json \
+  --output output/strategy
+
+# 使用详细日志
+uv run tdt-rules generate \
+  --claims examples/md/CN202210107337_claims.md \
+  --sequences examples/seq/CN202210107337.json \
+  --existing-rules Patents/patent_rules_rules.json \
+  --output output/strategy \
+  --verbose
+
+# 快速测试（使用示例数据）
+uv run python test_cn202210107337.py
 ```
 
 #### 输出示例
@@ -174,6 +237,32 @@ uv run tdt-seq convert examples/seq/CN118284690A.csv --pretty
   }
 }
 ```
+
+##### 智能规则提取JSON输出（🆕 新功能）
+
+```json
+{
+  "patent_number": "CN 116555216 A",
+  "group": 1,
+  "rules": [
+    {
+      "wild_type": "SEQ_ID_NO_1",
+      "rule": "conditional_protection",
+      "mutation": "Y178A/F186R/I210L/I228L",
+      "mutation_logic": "(Y178A & F186R) | (I210L & I228L)",
+      "identity_logic": "seq_identity >= 95%",
+      "statement": "保护包含特定突变组合且序列同一性≥95%的TdT变体",
+      "comment": "封闭式保护：精确突变组合"
+    }
+  ]
+}
+```
+
+**关键特征：**
+- 🎯 **简化格式**：与现有规则JSON兼容
+- ⚙️ **逻辑表达式**：`&` (AND), `|` (OR), `!` (NOT), `()` (分组)
+- 🔬 **突变模式**：标准格式 `Y178A` (原氨基酸+位置+新氨基酸)
+- 📊 **保护类型**：`identical`, `identity>X%`, `conditional_protection`
 
 ## 📈 项目进展时间线
 
@@ -238,26 +327,68 @@ uv run tdt-seq convert examples/seq/CN118284690A.csv --pretty
   - CSV文件：6,775个序列批量处理成功（1.4秒） ✓
   - JSON输出：标准化格式，包含完整元数据 ✓
 
+### Phase 6: 智能规则提取Agent开发 (2025-09-07 下午)
+
+- ✅ **数据加载和预处理**
+  - 权利要求书Markdown解析器开发完成 ✓
+  - 标准化序列JSON加载器实现 ✓
+  - SEQ ID NO引用识别算法构建 ✓
+  - 突变模式识别算法开发 ✓
+- ✅ **LLM Agent核心系统**
+  - 基于Qwen Plus的专利分析Agent ✓
+  - 专利保护规则分析提示模板设计 ✓
+  - 多层JSON解析容错机制实现 ✓
+  - 智能规则生成和输出管理器 ✓
+- ✅ **简化输出格式设计**
+  - 与现有规则JSON兼容的简化格式 ✓
+  - 逻辑表达式系统：AND/OR/NOT操作符 ✓
+  - 突变位点标准化表示：Y178A/F186R格式 ✓
+  - 保护规则类型分类系统 ✓
+- ✅ **Agent功能聚焦优化**
+  - 去除复杂度分析和回避策略生成 ✓
+  - 专注于4个核心问题的分析 ✓
+  - 简洁明确的输出要求实现 ✓
+  - 逻辑表达式描述复杂保护条件 ✓
+- ✅ **自动文件生成机制**
+  - 简化JSON和Markdown自动导出 ✓
+  - 容错处理确保文件始终生成 ✓
+  - 时间戳管理和结果索引系统 ✓
+  - 命令行工具`tdt-rules`开发完成 ✓
+- ✅ **完整系统测试**
+  - CN202210107337小数据集测试成功 ✓
+  - 数据加载→LLM分析→规则生成→文件导出完整流程验证 ✓
+  - 多格式输出：JSON、Markdown、文本报告 ✓
+  - 错误处理和异常恢复机制验证 ✓
+
 ## 🛠️ 技术架构
 
 ```
 src/tdt/
 ├── __init__.py              # 包初始化
 ├── cli.py                  # PDF提取命令行接口
-├── cli_sequences.py        # 序列处理命令行接口
+├── cli_sequences.py        # 序列处理命令行接口  
+├── cli_rules.py            # 智能规则提取命令行接口 🆕
 ├── core/
 │   ├── parser.py          # PDF解析核心
 │   ├── extractor.py       # 权利要求书提取器
 │   ├── sequence_processor.py  # 统一序列处理器
 │   ├── format_detector.py    # 格式识别器
+│   ├── data_loader.py     # 数据加载器 🆕
+│   ├── llm_agent.py       # LLM规则生成Agent 🆕
+│   ├── rule_generator.py  # 智能规则生成器 🆕
 │   └── parsers/
 │       ├── base.py           # 解析器基类
 │       ├── fasta_parser.py   # FASTA解析器
 │       └── csv_parser.py     # CSV解析器
+├── agents/                 # LLM智能体模块 🆕
+│   ├── __init__.py
+│   └── prompts.py          # LLM提示模板
 ├── models/
 │   ├── sequence_record.py    # 序列记录数据模型
 │   ├── processing_models.py  # 处理结果模型
-│   └── format_models.py      # 格式定义模型
+│   ├── format_models.py      # 格式定义模型
+│   ├── claims_models.py    # 权利要求书数据模型 🆕
+│   └── rule_models.py      # 规则数据模型 🆕
 └── utils/
     ├── file_utils.py        # 文件工具函数
     └── text_utils.py        # 文本工具函数
@@ -295,10 +426,18 @@ src/tdt/
    - 基于Pydantic v2的严格类型验证
    - 完整的序列记录、处理结果数据结构
    - 支持序列组成分析、分子量计算等
-7. **CLI接口**
+7. **智能规则提取系统** (`core.llm_agent`, `agents/`) 🆕
+
+   - 基于大语言模型的专利规则分析Agent
+   - 专利保护范围识别和逻辑表达式生成
+   - 多层JSON解析容错机制，确保稳定输出
+   - 与现有规则格式兼容的简化输出
+
+8. **CLI接口**
 
    - `tdt-extract`：PDF权利要求书提取工具
    - `tdt-seq`：序列处理工具套件
+   - `tdt-rules`：智能规则提取工具 🆕
    - Click框架的现代命令行界面
 
 ## 🔍 技术细节
@@ -342,6 +481,20 @@ src/tdt/
 - **处理日志**：详细的处理步骤和错误信息记录
 - **统计分析**：长度分布、类型分布、验证汇总
 
+### 智能规则提取算法 🆕
+
+- **专利保护分析**：基于LLM的权利要求书理解和保护范围识别
+- **逻辑表达式生成**：将复杂保护条件转化为结构化逻辑表达式
+- **突变模式识别**：标准化突变位点格式（Y178A）和组合逻辑
+- **容错机制**：三层JSON解析策略确保文件始终生成
+
+### LLM Agent工作流程
+
+1. **数据加载**：权利要求书、序列数据、现有规则
+2. **保护分析**：识别野生型序列和突变模式
+3. **规则生成**：转化为逻辑表达式和标准化格式
+4. **文件输出**：自动生成JSON和Markdown报告
+
 ## 📋 下一步计划
 
 ### 已完成 ✅
@@ -350,19 +503,19 @@ src/tdt/
 2. ~~统一序列处理器~~ ✅
 3. ~~格式自动识别和JSON标准化输出~~ ✅
 4. ~~命令行工具套件~~ ✅
+5. ~~智能规则提取Agent系统~~ ✅ 🆕
+   - ~~基于LLM的专利保护规则分析~~ ✅
+   - ~~逻辑表达式突变规则描述~~ ✅
+   - ~~简化JSON格式输出~~ ✅
+   - ~~多层容错机制~~ ✅
+   - ~~自动文件生成~~ ✅
 
 ### 进行中 🚧
 
-1. **序列规则提炼系统**：基于LLM的智能规则提取
-
-   - Excel规则文件转JSON转换器 ✅
-   - 权利要求书与序列数据的关联分析
-   - 规则复杂度评估和表达策略生成
-2. **规则分析引擎**：智能分析序列保护规则的复杂度
-
-   - 突变模式识别和分类
-   - 保护范围分析（封闭式vs开放式）
-   - 回避策略生成
+1. **性能优化和扩展**：系统性能提升和功能扩展
+   - 大规模数据处理优化
+   - 批量专利分析功能
+   - 规则质量评估机制
 
 ### 计划中 📋
 

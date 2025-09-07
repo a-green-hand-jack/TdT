@@ -78,6 +78,7 @@ def test_cn202210107337_system():
         
         # 获取原始LLM响应用于简化格式导出
         raw_llm_response = getattr(generated_rules, 'raw_llm_response', None)
+        print(f"🔍 原始LLM响应预览: {raw_llm_response[:200] if raw_llm_response else '无响应'}...")
         
         print("✅ 规则生成完成！")
         print(f"   生成规则数: {len(generated_rules.protection_rules)}")

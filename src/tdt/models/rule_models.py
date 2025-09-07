@@ -134,6 +134,7 @@ class RuleGenerationResult(BaseModel):
     # LLM分析过程
     llm_reasoning: str = Field(..., description="LLM推理过程")
     processing_log: List[Dict[str, Any]] = Field(default_factory=list, description="处理日志")
+    raw_llm_response: Optional[str] = Field(None, description="原始LLM响应，用于调试")
 
 
 class StandardizedRuleOutput(BaseModel):

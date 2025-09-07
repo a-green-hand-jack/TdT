@@ -46,7 +46,7 @@ tdt-extract batch    # 批量处理目录中的PDF文件
 ### 安装依赖
 ```bash
 # 克隆项目
-git clone <repository-url>
+git clone git@github.com:a-green-hand-jack/TdT.git
 cd TdT
 
 # 安装项目依赖
@@ -61,16 +61,16 @@ uv pip install -e .
 #### 基本用法
 ```bash
 # 分析PDF文件结构
-uv run tdt-extract info Patents/CN118284690A.pdf
+uv run tdt-extract info examples/pdf/CN118284690A.pdf
 
 # 提取单个PDF的权利要求书
-uv run tdt-extract extract Patents/CN118284690A.pdf -o output -f markdown
+uv run tdt-extract extract examples/pdf/CN118284690A.pdf -o examples/md -f markdown
 
 # 批量处理目录中的所有PDF
-uv run tdt-extract batch Patents/ -o output -f markdown
+uv run tdt-extract batch examples/pdf/ -o examples/md -f markdown
 
 # 强制覆盖已存在的输出文件
-uv run tdt-extract extract Patents/CN118284690A.pdf -o output -f markdown --force
+uv run tdt-extract extract examples/pdf/CN118284690A.pdf -o examples/md -f markdown --force
 ```
 
 #### 输出示例

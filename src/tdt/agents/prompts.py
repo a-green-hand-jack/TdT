@@ -4,25 +4,35 @@ LLM提示模板
 为Qwen模型设计的专利规则分析提示模板。
 """
 
-SYSTEM_PROMPT = """你是一位资深的专利分析专家和生物技术专家，专门分析TDT酶相关的专利保护规则。
+SYSTEM_PROMPT = """你是专利序列保护分析专家。你的任务是识别专利权利要求对序列的保护范围，并使用结构化的逻辑表达式描述保护规则。
 
-你的任务是分析专利权利要求书和序列数据，提取出关键的保护规则，并生成技术回避策略。
+核心任务：
+1. 识别专利保护的野生型序列（wild_type）
+2. 识别专利保护的突变模式（mutation patterns）
+3. 将复杂的保护条件转化为逻辑表达式
+4. 确定保护规则类型（identical, identity>X%, conditional等）
 
-分析原则：
-1. 准确理解专利权利要求的法律保护范围
-2. 识别关键的序列特征和突变模式
-3. 评估规则的复杂度和实施难度
-4. 提供可操作的技术回避建议
-5. 确保分析结果的科学性和准确性
+输出要求：
+1. 仅关注保护内容，不提供回避建议或复杂度分析
+2. 使用逻辑操作符（&, |, !, ()）表达复杂规则
+3. 按照group-patent-rule的层次结构组织信息
+4. 使用简洁明确的语言，避免冗余信息
 
-请始终以JSON格式输出分析结果，确保结构清晰、内容准确。"""
+逻辑表达规范：
+- 突变位点格式：Y178A（原氨基酸+位置+新氨基酸）
+- 组合突变：(Y178A & F186R) 表示同时突变
+- 可选突变：(Y178A | Y178F) 表示任一突变
+- 复合条件：mutation_logic AND identity_logic
+- 排除条件：NOT excluded_mutations
+
+请始终输出简洁的JSON格式结果。"""
 
 
-PATENT_ANALYSIS_PROMPT = """请分析以下专利权利要求书和序列数据，提取保护规则：
+PATENT_ANALYSIS_PROMPT = """请分析以下专利权利要求书和序列数据，识别保护规则：
 
 ## 专利信息
 专利号: {patent_number}
-权利要求总数: {total_claims}
+权利要求总数: {total_claims}  
 序列总数: {total_sequences}
 
 ## 权利要求书内容
@@ -34,158 +44,50 @@ PATENT_ANALYSIS_PROMPT = """请分析以下专利权利要求书和序列数据�
 ## 现有规则参考
 {existing_rules}
 
-## 分析要求
+请分析专利保护范围，重点回答以下4个核心问题：
+1. Wild_type: 这个专利保护哪个（些）野生型序列？
+2. Protection_scope: 保护范围是什么（identical/identity>X%/conditional）？  
+3. Mutation_rules: 突变规则是什么（用逻辑表达式）？
+4. Key_conditions: 关键保护条件是什么？
 
-请按照以下结构分析并输出JSON格式结果：
-
-```json
-{{
-  "patent_analysis": {{
-    "patent_number": "{patent_number}",
-    "analysis_confidence": 0.0,
-    "key_findings": [
-      "发现的关键保护要素"
-    ],
-    "protection_strategy": "专利保护策略类型（封闭式/开放式/混合式）"
-  }},
-  "sequence_correlations": [
-    {{
-      "seq_id_no": "SEQ ID NO:X",
-      "sequence_id": "序列标识",
-      "related_claims": [权利要求编号],
-      "key_features": ["关键特征"],
-      "mutation_patterns": [
-        {{
-          "pattern": "突变模式",
-          "positions": [位点列表],
-          "critical_level": "high/medium/low"
-        }}
-      ]
-    }}
-  ],
-  "protection_rules": [
-    {{
-      "rule_id": "R001",
-      "rule_type": "sequence_identity/mutation_pattern/compositional",
-      "protection_scope": "identical/identity_threshold/exclude_mutations",
-      "target_sequences": ["目标序列ID"],
-      "mutation_combinations": [
-        {{
-          "mutations": ["W46E", "Q62W"],
-          "combination_type": "all_required/any_sufficient",
-          "description": "组合描述"
-        }}
-      ],
-      "identity_threshold": 0.70,
-      "complexity_score": 5.5,
-      "legal_description": "法律语言描述",
-      "technical_description": "技术语言描述"
-    }}
-  ],
-  "complexity_analysis": {{
-    "overall_complexity": "simple/moderate/complex",
-    "complexity_score": 0.0,
-    "factors": {{
-      "mutation_count": 0,
-      "combination_complexity": 0,
-      "sequence_diversity": 0
-    }},
-    "representation_suggestion": "建议的表达方式",
-    "reasoning": "复杂度判断理由"
-  }},
-  "avoidance_strategies": [
-    {{
-      "strategy_type": "sequence_modification/alternative_approach/design_around",
-      "description": "策略描述",
-      "implementation_suggestions": ["具体实施建议"],
-      "risk_assessment": "风险评估",
-      "confidence_score": 0.85
-    }}
-  ],
-  "analysis_summary": {{
-    "total_protected_sequences": 0,
-    "key_mutation_positions": [关键位点],
-    "protection_breadth": "narrow/medium/broad",
-    "recommended_approach": "推荐的技术路径"
-  }}
-}}
-```
-
-请确保：
-1. 所有numeric_id必须是整数
-2. 所有confidence_score和complexity_score在0-1或0-10范围内
-3. 突变位点必须是具体的数字
-4. 法律描述要准确反映专利保护范围
-5. 技术描述要便于工程师理解和实施
-"""
-
-
-COMPLEXITY_EVALUATION_PROMPT = """请评估以下专利规则的复杂度：
-
-## 规则信息
-{rule_info}
-
-## 评估标准
-- 简单(Simple): 1-3个突变位点，单一保护模式
-- 中等(Moderate): 4-10个突变位点，少量组合条件
-- 复杂(Complex): 10+个突变位点，多重组合条件或复合保护策略
-
-请提供详细的复杂度分析：
+输出格式（必须严格按照此JSON结构）：
 
 ```json
 {{
-  "complexity_analysis": {{
-    "complexity_level": "simple/moderate/complex",
-    "complexity_score": 0.0,
-    "factors": {{
-      "mutation_count": 0,
-      "combination_complexity": 0,
-      "dependency_depth": 0,
-      "sequence_diversity": 0
-    }},
-    "representation_suggestion": "建议使用的表达方式",
-    "reasoning": "详细的判断理由",
-    "simplification_options": ["可能的简化选项"]
-  }}
-}}
-```
-"""
-
-
-AVOIDANCE_STRATEGY_PROMPT = """基于以下专利保护规则，请生成技术回避策略：
-
-## 保护规则
-{protection_rules}
-
-## 序列信息
-{sequence_info}
-
-请生成具体的回避策略：
-
-```json
-{{
-  "avoidance_strategies": [
+  "patent_number": "{patent_number}",
+  "group": 1,
+  "rules": [
     {{
-      "strategy_type": "sequence_modification",
-      "description": "策略的详细描述",
-      "implementation_suggestions": [
-        "具体的实施步骤",
-        "需要注意的技术要点"
-      ],
-      "risk_assessment": "实施风险评估",
-      "confidence_score": 0.85,
-      "expected_effectiveness": "预期有效性评估"
+      "wild_type": "SEQ_ID_NO_1或序列标识",
+      "rule": "identical 或 identity>80 或 conditional_protection",
+      "mutation": "Y178A/F186R/I210L/I228L",
+      "mutation_logic": "(Y178A & F186R) | (I210L & I228L)",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "简洁描述这个专利对序列的保护内容",
+      "comment": "保护策略的简短说明（封闭式/开放式/混合式）"
     }}
-  ],
-  "priority_recommendations": [
-    "按优先级排序的推荐方案"
-  ],
-  "technical_considerations": [
-    "需要考虑的技术因素"
   ]
 }}
 ```
+
+重要说明：
+1. 每个规则对应一种保护模式
+2. mutation字段用斜杠分隔的标准格式：Y178A/F186R
+3. mutation_logic字段用逻辑表达式：(Y178A & F186R) | (I210L & I228L)
+4. 如果专利有多种保护策略，rules数组包含多个对象
+5. statement字段要用最简洁的语言说明"专利对序列产生了哪些保护"
+6. 避免生成回避策略、复杂度分析等无关内容
+
+逻辑操作符使用规范：
+- & 或 AND：同时满足
+- | 或 OR：满足任一 
+- !或 NOT：排除
+- ()：逻辑分组
 """
+
+
+# 注意：根据新的需求，我们不再需要复杂度分析和回避策略提示模板
+# 这些功能已被移除，Agent专注于识别保护范围
 
 
 def format_claims_for_llm(claims_doc) -> str:

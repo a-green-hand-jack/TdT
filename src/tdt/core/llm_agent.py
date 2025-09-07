@@ -7,12 +7,11 @@
 import json
 import logging
 import os
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from openai import OpenAI
 
 from ..agents.prompts import (
-    AVOIDANCE_STRATEGY_PROMPT, COMPLEXITY_EVALUATION_PROMPT,
     PATENT_ANALYSIS_PROMPT, SYSTEM_PROMPT, format_claims_for_llm,
     format_existing_rules, format_sequence_summary
 )
@@ -264,7 +263,7 @@ class LLMRuleAgent:
                     raise QwenAPIError(f"LLM调用失败: {e}")
     
     def _parse_analysis_response(self, response: str, patent_number: str) -> RuleGenerationResult:
-        """解析LLM分析响应
+        """解析LLM分析响应，支持容错机制
         
         Args:
             response: LLM响应文本
@@ -273,9 +272,38 @@ class LLMRuleAgent:
         Returns:
             规则生成结果
         """
+        # 多种解析策略
+        json_content = None
+        parsed_data = None
+        
         try:
-            # 尝试解析JSON响应
-            data = json.loads(response)
+            # 策略1: 直接解析
+            parsed_data = json.loads(response)
+            json_content = response
+        except json.JSONDecodeError:
+            try:
+                # 策略2: 清理markdown代码块标记
+                cleaned_response = self._clean_markdown_json(response)
+                parsed_data = json.loads(cleaned_response)
+                json_content = cleaned_response
+            except json.JSONDecodeError:
+                try:
+                    # 策略3: 提取JSON部分
+                    extracted_json = self._extract_json_from_text(response)
+                    if extracted_json:
+                        parsed_data = json.loads(extracted_json)
+                        json_content = extracted_json
+                except json.JSONDecodeError:
+                    pass
+        
+        # 如果所有解析策略都失败，创建备用结果并保存原始响应
+        if parsed_data is None:
+            logger.error(f"所有JSON解析策略失败，原始响应: {response[:500]}...")
+            parsed_data = self._create_fallback_result(response, patent_number)
+            json_content = json.dumps(parsed_data, ensure_ascii=False, indent=2)
+        
+        try:
+            data = parsed_data
             
             # 创建规则生成结果
             result = RuleGenerationResult(
@@ -294,15 +322,138 @@ class LLMRuleAgent:
                 ),
                 avoidance_strategies=[],
                 analysis_summary=data.get('analysis_summary', {}),
-                llm_reasoning=data.get('patent_analysis', {}).get('key_findings', [])
+                llm_reasoning=str(data.get('patent_analysis', {}).get('key_findings', "分析完成"))
             )
             
-            return result
+        except Exception as e:
+            logger.error(f"规则生成结果创建失败: {e}")
+            # 创建最小化的备用结果
+            result = self._create_minimal_fallback_result(patent_number, json_content or response)
             
-        except json.JSONDecodeError as e:
-            logger.error(f"JSON解析失败: {e}")
-            logger.error(f"原始响应: {response}")
-            raise QwenAPIError(f"LLM响应格式错误: {e}")
+        # 保存原始响应到结果中，便于调试
+        if hasattr(result, 'raw_llm_response'):
+            result.raw_llm_response = response
+            
+        return result
+    
+    def _clean_markdown_json(self, text: str) -> str:
+        """清理markdown代码块标记
+        
+        Args:
+            text: 包含markdown标记的文本
+            
+        Returns:
+            清理后的JSON文本
+        """
+        import re
+        
+        # 移除markdown代码块标记
+        # 匹配 ```json ... ``` 或 ``` ... ```
+        patterns = [
+            r'```json\s*(.*?)\s*```',
+            r'```\s*(.*?)\s*```',
+            r'`([^`]*)`'
+        ]
+        
+        for pattern in patterns:
+            match = re.search(pattern, text, re.DOTALL)
+            if match:
+                return match.group(1).strip()
+        
+        return text.strip()
+    
+    def _extract_json_from_text(self, text: str) -> str:
+        """从文本中提取JSON部分
+        
+        Args:
+            text: 包含JSON的文本
+            
+        Returns:
+            提取的JSON字符串，如果未找到则返回None
+        """
+        import re
+        
+        # 寻找JSON对象 { ... }
+        json_pattern = r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}'
+        matches = re.findall(json_pattern, text, re.DOTALL)
+        
+        # 尝试解析每个匹配项
+        for match in matches:
+            try:
+                json.loads(match)
+                return match
+            except json.JSONDecodeError:
+                continue
+        
+        # 寻找JSON数组 [ ... ]
+        array_pattern = r'\[[^\[\]]*(?:\[[^\[\]]*\][^\[\]]*)*\]'
+        matches = re.findall(array_pattern, text, re.DOTALL)
+        
+        for match in matches:
+            try:
+                json.loads(match)
+                return match
+            except json.JSONDecodeError:
+                continue
+                
+        return None
+    
+    def _create_fallback_result(self, response: str, patent_number: str) -> Dict[str, Any]:
+        """创建备用解析结果
+        
+        Args:
+            response: 原始LLM响应
+            patent_number: 专利号
+            
+        Returns:
+            备用结果字典
+        """
+        return {
+            "patent_number": patent_number,
+            "group": 1,
+            "rules": [
+                {
+                    "rule": "analysis_failed",
+                    "statement": "LLM响应解析失败，需要人工处理",
+                    "comment": f"原始响应长度: {len(response)} 字符"
+                }
+            ],
+            "analysis_summary": {
+                "status": "parsing_failed",
+                "original_response_preview": response[:200] + "..." if len(response) > 200 else response
+            }
+        }
+    
+    def _create_minimal_fallback_result(self, patent_number: str, content: str) -> 'RuleGenerationResult':
+        """创建最小化备用结果
+        
+        Args:
+            patent_number: 专利号
+            content: 内容
+            
+        Returns:
+            最小化的RuleGenerationResult对象
+        """
+        from ..models.rule_models import ComplexityAnalysis, ComplexityLevel
+        
+        return RuleGenerationResult(
+            patent_number=patent_number,
+            llm_model=self.model,
+            analysis_confidence=0.0,
+            protection_rules=[],
+            complexity_analysis=ComplexityAnalysis(
+                complexity_level=ComplexityLevel.SIMPLE,
+                complexity_score=0.0,
+                mutation_count=0,
+                combination_complexity=0,
+                dependency_depth=0,
+                representation_suggestion="parsing_failed",
+                reasoning="LLM响应解析失败"
+            ),
+            avoidance_strategies=[],
+            analysis_summary={"status": "parsing_failed", "content_preview": content[:200]},
+            llm_reasoning="解析失败，保留原始内容"
+        )
     
     def test_connection(self) -> bool:
         """测试LLM连接

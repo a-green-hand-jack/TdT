@@ -19,3 +19,6 @@
 
 # 临时忽略
 af3_loss.md
+# 忽略输入输出文件
+output/
+Patents/

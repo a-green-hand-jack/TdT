@@ -1,4 +1,4 @@
-# TDT 酶专利序列提取项目
+# TDT 酶,利序列提取项目.
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -146,6 +146,30 @@ uv run tdt-rules generate-rules \
 # 📄 output/strategy/CN_202210107337_rules.json  (简化规则JSON)  
 # 📋 output/strategy/CN_202210107337_rules.md    (详细分析报告)
 ```
+
+<!-- ```bash
+# 1️⃣ 设置API密钥（获取Qwen API密钥：https://bailian.console.aliyun.com/）
+export QWEN_API_KEY="your-api-key-here"
+export QWEN_BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1"
+
+# 2️⃣ 处理序列文件（如果还没有JSON格式）
+uv run tdt-seq process examples/seq/CN118284690A.csv -o output/sequences/CN118284690A.json
+
+# 3️⃣ 提取权利要求书
+uv run tdt-extract extract examples/pdf/CN118284690A.pdf -o output/markdowns/ -f markdown
+
+# 4️⃣ 生成专利保护规则
+uv run tdt-rules generate-rules \
+  output/markdowns/CN118284690A_claims.md \
+  output/sequences/CN118284690A.json \
+  "Patents/patent rules_rules.json" \
+  -o output/strategy \
+  --export-markdown
+
+# 🎉 完成！查看结果：
+# 📄 output/strategy/CN_118284690A_rules.json  (简化规则JSON)  
+# 📋 output/strategy/CN_118284690A_rules.md    (详细分析报告)
+``` -->
 
 ### 使用示例
 

@@ -1,0 +1,13 @@
+{
+  "patent_number": "CN 118284690A",
+  "group": 1,
+  "rules": [
+    {
+      "wild_type": "SEQ_ID_NO_1",
+      "rule": "analysis_completed",
+      "mutation": "待分析",
+      "statement": "已完成CN 118284690A的保护规则分析",
+      "comment": "系统生成的备用格式"
+    }
+  ]
+}

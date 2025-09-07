@@ -123,6 +123,7 @@ OPENAI_BASE_URL=https://api.openai.com/v1
 
 ### 核心工作流程（3步完成）
 
+**案例一**
 ```bash
 # 1️⃣ 设置API密钥（获取Qwen API密钥：https://bailian.console.aliyun.com/）
 export QWEN_API_KEY="your-api-key-here"
@@ -147,7 +148,8 @@ uv run tdt-rules generate-rules \
 # 📋 output/strategy/CN_202210107337_rules.md    (详细分析报告)
 ```
 
-<!-- ```bash
+**案例二**
+```bash
 # 1️⃣ 设置API密钥（获取Qwen API密钥：https://bailian.console.aliyun.com/）
 export QWEN_API_KEY="your-api-key-here"
 export QWEN_BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1"
@@ -169,7 +171,7 @@ uv run tdt-rules generate-rules \
 # 🎉 完成！查看结果：
 # 📄 output/strategy/CN_118284690A_rules.json  (简化规则JSON)  
 # 📋 output/strategy/CN_118284690A_rules.md    (详细分析报告)
-``` -->
+```
 
 ### 使用示例
 

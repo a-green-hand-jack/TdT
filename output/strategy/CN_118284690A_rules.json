@@ -1,13 +1,1096 @@
-{,,;.
+{
   "patent_number": "CN 118284690A",
   "group": 1,
+  "processing_method": "智能分段处理",
   "rules": [
     {
+      "wild_type": "未明确指定SEQ_ID",
+      "rule": "conditional",
+      "mutation": "在指定位置发生任意氨基酸替换",
+      "mutation_logic": "(pos53_mut | pos65_mut | pos68_mut | pos159_mut | pos211_mut | pos217_mut | pos224_mut | pos271_mut | pos272_mut | pos273_mut | pos275_mut | pos278_mut | pos331_mut | pos341_mut | pos391_mut)",
+      "identity_logic": "N/A",
+      "statement": "保护在位置53、65、68、159、211、217、224、271、272、273、275、278、331、341或391中至少一个发生任意氨基酸替换的工程化末端脱氧核苷酸转移酶变体。",
+      "comment": "依赖权利要求107/108/114，需结合其限定的野生型序列。"
+    },
+    {
+      "wild_type": "未明确指定SEQ_ID",
+      "rule": "conditional",
+      "mutation": "在指定位置发生特定氨基酸替换",
+      "mutation_logic": "(53T | 65L | 68R | 159R | 211V | 217R | 224V | 271H | 271P | 272A | 273P | 275Q | 278G | 331K | 341R | 391L)",
+      "identity_logic": "N/A",
+      "statement": "保护在指定位置发生特定残基替换（如53T、65L、68R等）中至少一个的工程化末端脱氧核苷酸转移酶变体。",
+      "comment": "从属于权利要求209，继承其位置限定并进一步限定具体突变类型。"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_3302",
+      "rule": "conditional",
+      "mutation": "单点或组合突变",
+      "mutation_logic": "(75 | 207 | 226 | 346 | 182 | 201 | 203 | 234 | 235 | 268 | 342 | 373 | 387 | 233 | 237 | 259 | 276 | 366 | 104 | 106 | 200) | (75 & 233 & 344) | (75 & 233 & 366) | (104 & 200 & 207 & 237 & 344 & 373 & 387) | (104 & 207 & 344 & 387) | (106 & 182 & 203 & 226 & 235 & 342 & 346) | (182 & 201 & 203 & 226 & 234 & 235 & 346) | (182 & 201 & 203 & 226 & 235) | (182 & 201 & 203 & 226 & 235 & 346) | (182 & 201 & 203 & 268 & 346) | (182 & 201 & 226 & 234 & 342 & 346) | (182 & 201 & 226 & 235 & 346) | (182 & 201 & 226 & 268 & 346) | (182 & 201 & 342) | (182 & 203 & 226) | (182 & 226 & 234 & 268 & 342 & 346) | (182 & 226 & 234 & 346) | (182 & 226 & 235) | (182 & 226 & 235 & 268 & 346) | (182 & 226 & 235 & 342) | (182 & 226 & 235 & 346) | (182 & 226 & 268 & 342 & 346) | (182 & 226 & 342) | (182 & 226 & 346) | (182 & 342 & 346) | (201 & 203 & 226 & 234 & 342 & 346) | (201 & 203 & 226 & 234 & 346) | (201 & 203 & 226 & 268 & 342) | (201 & 203 & 226 & 346) | (201 & 203 & 268 & 346) | (201 & 226 & 234 & 342 & 346) | (201 & 226 & 234 & 346) | (201 & 226 & 235 & 342) | (201 & 226 & 268 & 346) | (203 & 226) | (203 & 226 & 234 & 235) | (203 & 226 & 234 & 235 & 346) | (203 & 226 & 234 & 342 & 346) | (203 & 226 & 235 & 268 & 346) | (203 & 226 & 235 & 342) | (203 & 226 & 235 & 346) | (203 & 226 & 342 & 346) | (203 & 226 & 346) | (207 & 233 & 237 & 344 & 387) | (207 & 344 & 387) | (207 & 387) | (226 & 234 & 235) | (226 & 234 & 342 & 346) | (226 & 235 & 268 & 342 & 346) | (226 & 235 & 268 & 346) | (226 & 235 & 342) | (226 & 268 & 342) | (226 & 268 & 342 & 346) | (226 & 268 & 346) | (226 & 342) | (226 & 342 & 346) | (226 & 346) | (234 & 346) | (235 & 268) | (235 & 346) | (259 & 276 & 387) | (342 & 346)",
+      "identity_logic": "N/A",
+      "statement": "保护在SEQ ID NO:3302基础上，在指定单点或组合位置发生突变的工程化末端脱氧核苷酸转移酶。",
+      "comment": "覆盖所有列出的单点突变及组合突变模式，无序列同一性限制。"
+    },
+    {
+      "wild_type": "未知野生型序列（需参考权利要求105）",
+      "rule": "conditional",
+      "mutation": "在指定位置发生任意氨基酸替换",
+      "mutation_logic": "(pos80_mut | pos87_mut | pos105_mut | pos109_mut | pos111_mut | pos143_mut | pos147_mut | pos157_mut | pos160_mut | pos180_mut | pos203_mut | pos209_mut | pos226_mut | pos256_mut | pos261_mut | pos266_mut | pos279_mut | pos327_mut | pos339_mut | pos349_mut | pos353_mut | pos364_mut)",
+      "identity_logic": "无明确同一性阈值",
+      "statement": "保护在指定22个位置中至少一个位置发生任意氨基酸差异的工程化末端脱氧核苷酸转移酶变体。",
+      "comment": "依赖权利要求105定义的基础序列，保护范围覆盖任一指定位置的非特异性突变。"
+    },
+    {
+      "wild_type": "未知野生型序列（需参考权利要求105）",
+      "rule": "conditional",
+      "mutation": "在指定位置发生特定氨基酸替换",
+      "mutation_logic": "(80S | 87S | 103P | 111V | 143A | 147Y | (157A | 157V) | 160S | 180A | 203D | 209E | 226L | 256G | 261R | 266G | 279H | 327F | 339M | 349E | 353N | 364L)",
+      "identity_logic": "无明确同一性阈值",
+      "statement": "保护在指定22个位置中至少一个位置发生所列特定氨基酸替换的工程化末端脱氧核苷酸转移酶变体。",
+      "comment": "从属于权利要求112，进一步限定突变为特定氨基酸残基，缩小保护范围但增强特异性。"
+    },
+    {
+      "wild_type": "UNKNOWN_SEQ",
+      "rule": "conditional",
+      "mutation": "Position 2 and 41 mutated",
+      "mutation_logic": "(mutated_at_2 & mutated_at_41)",
+      "identity_logic": "seq_identity >= 0%",
+      "statement": "Protects any sequence with mutations at both position 2 and 41, regardless of amino acid identity.",
+      "comment": "No SEQ ID provided; assumes any amino acid substitution at specified positions is covered."
+    },
+    {
+      "wild_type": "UNKNOWN_SEQ",
+      "rule": "conditional",
+      "mutation": "Position 2 and 42 mutated",
+      "mutation_logic": "(mutated_at_2 & mutated_at_42)",
+      "identity_logic": "seq_identity >= 0%",
+      "statement": "Protects any sequence with mutations at both position 2 and 42, regardless of amino acid identity.",
+      "comment": "No SEQ ID provided; assumes any amino acid substitution at specified positions is covered."
+    },
+    {
+      "wild_type": "UNKNOWN_SEQ",
+      "rule": "conditional",
+      "mutation": "Position 2 and 43 mutated",
+      "mutation_logic": "(mutated_at_2 & mutated_at_43)",
+      "identity_logic": "seq_identity >= 0%",
+      "statement": "Protects any sequence with mutations at both position 2 and 43, regardless of amino acid identity.",
+      "comment": "No SEQ ID provided; assumes any amino acid substitution at specified positions is covered."
+    },
+    {
+      "wild_type": "UNKNOWN_SEQ",
+      "rule": "conditional",
+      "mutation": "Position 2 and 84 mutated",
+      "mutation_logic": "(pos2_mutated & pos84_mutated)",
+      "identity_logic": "seq_identity >= 0%",
+      "statement": "Protects any sequence with mutations at both position 2 and 84, regardless of amino acid identity or overall sequence similarity.",
+      "comment": "Assumes minimal protection scope based on positional mutation requirement without defined wild-type or residue constraints."
+    },
+    {
+      "wild_type": "UNKNOWN_SEQ",
+      "rule": "conditional",
+      "mutation": "Position 2 and 85 mutated",
+      "mutation_logic": "(pos2_mutated & pos85_mutated)",
+      "identity_logic": "seq_identity >= 0%",
+      "statement": "Protects any sequence with mutations at both position 2 and 85, regardless of amino acid identity or overall sequence similarity.",
+      "comment": "Assumes minimal protection scope based on positional mutation requirement without defined wild-type or residue constraints."
+    },
+    {
+      "wild_type": "UNKNOWN_SEQ",
+      "rule": "conditional",
+      "mutation": "Position 2 and 86 mutated",
+      "mutation_logic": "(pos2_mutated & pos86_mutated)",
+      "identity_logic": "seq_identity >= 0%",
+      "statement": "Protects any sequence with mutations at both position 2 and 86, regardless of amino acid identity or overall sequence similarity.",
+      "comment": "Assumes minimal protection scope based on positional mutation requirement without defined wild-type or residue constraints."
+    },
+    {
+      "wild_type": "SEQ_ID_NO_UNDEFINED",
+      "rule": "conditional",
+      "mutation": "任意突变组合导致可溶性表达增加",
+      "mutation_logic": "ANY_MUTATION & increased_soluble_expression",
+      "identity_logic": "seq_identity >= 0%",
+      "statement": "保护任何相对于野生型或参考工程化TdT具有增加可溶性表达的突变体",
+      "comment": "功能限定型保护，不依赖具体突变位点，需实验验证表型"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_UNDEFINED",
+      "rule": "conditional",
+      "mutation": "任意突变组合导致高温活性增加",
+      "mutation_logic": "ANY_MUTATION & increased_thermostable_activity",
+      "identity_logic": "seq_identity >= 0%",
+      "statement": "保护任何相对于野生型或参考工程化TdT具有增加高温活性的突变体",
+      "comment": "功能限定型保护，不依赖具体突变位点，需实验验证表型"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_UNDEFINED",
+      "rule": "conditional",
+      "mutation": "任意突变组合导致副产物减少",
+      "mutation_logic": "ANY_MUTATION & reduced_byproduct_formation",
+      "identity_logic": "seq_identity >= 0%",
+      "statement": "保护任何相对于野生型或参考工程化TdT具有减少副产物形成的突变体",
+      "comment": "功能限定型保护，不依赖具体突变位点，需实验验证表型"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_26",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求26的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_96",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求96的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_97",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求97的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_224",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求224的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_225",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求225的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_4",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求4的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_9",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求9的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_10",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求10的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_12",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求12的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_17",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求17的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_18",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求18的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_25",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求25的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_29",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求29的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_31",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求31的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_33",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求33的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_34",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求34的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_36",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求36的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_37",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求37的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_38",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求38的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_39",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求39的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_41",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求41的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_42",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求42的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_43",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求43的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_44",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求44的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_48",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求48的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_53",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求53的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_81",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求81的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_82",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求82的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
       "wild_type": "SEQ_ID_NO_1",
-      "rule": "analysis_completed",
-      "mutation": "待分析",
-      "statement": "已完成CN 118284690A的保护规则分析",
-      "comment": "系统生成的备用格式"
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求1的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_2",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求2的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_3",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求3的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_5",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求5的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_6",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求6的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_7",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求7的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_8",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求8的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_11",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求11的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_13",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求13的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_14",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求14的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_15",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求15的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_16",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求16的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_19",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求19的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_20",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求20的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_21",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求21的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_22",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求22的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_23",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求23的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_24",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求24的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_27",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求27的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_28",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求28的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_30",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求30的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_32",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求32的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_35",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求35的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_40",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求40的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_45",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求45的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_46",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求46的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_47",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求47的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_49",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求49的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_50",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求50的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_51",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求51的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_52",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求52的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_54",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求54的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_55",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求55的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_57",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求57的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_58",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求58的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_59",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求59的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_60",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求60的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_61",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求61的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_62",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求62的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_63",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求63的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_64",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求64的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_65",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求65的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_66",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求66的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_67",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求67的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_68",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求68的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_69",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求69的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_70",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求70的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_71",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求71的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_72",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求72的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_73",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求73的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_74",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求74的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_75",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求75的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_76",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求76的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_77",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求77的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_78",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求78的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_79",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求79的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_80",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求80的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_83",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求83的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_84",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求84的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_85",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求85的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_86",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求86的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_87",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求87的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_88",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求88的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_89",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求89的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_90",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求90的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_91",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求91的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_92",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求92的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_93",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求93的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_94",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求94的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_95",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求95的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_192",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求192的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_193",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求193的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_194",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求194的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_195",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求195的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_211",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求211的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_214",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求214的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_215",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求215的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_216",
+      "rule": "conditional_protection",
+      "mutation": "待进一步分析",
+      "mutation_logic": "基于权利要求复杂度生成",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "权利要求216的保护规则（备用生成）",
+      "comment": "系统备用规则，需要人工审核"
+    },
+    {
+      "error": "无法生成有效保护规则：权利要求文本内容不完整（仅含'8. 2、'等片段），未提供野生型序列标识、突变氨基酸类型或序列同一性阈值，缺乏构建逻辑表达式所需的基本要素。"
     }
-  ]
+  ],
+  "metadata": {
+    "total_rules": 121,
+    "processing_timestamp": "2025-09-07T23:41:09.463026",
+    "claims_analyzed": 225,
+    "analysis_confidence": 0.8165289256198348
+  }
 }

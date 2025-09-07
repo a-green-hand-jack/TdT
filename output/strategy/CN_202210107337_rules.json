@@ -4,57 +4,39 @@
   "rules": [
     {
       "wild_type": "SEQ_ID_NO_1",
-      "rule": "identical",
+      "rule": "conditional_protection",
       "mutation": "Y178A/F186R/I210L/I228L/V302G/T330A/R335A/R335L/K337G/K337L/I339V/G340G/G340L/R435L/T454A/G455V/S456V/R457G/N477L/H478G",
       "mutation_logic": "(Y178A | F186R | I210L | I228L | V302G | T330A | R335A | R335L | K337G | K337L | I339V | G340G | G340L | R435L | T454A | G455V | S456V | R457G | N477L | H478G)",
-      "identity_logic": "seq_identity >= 100%",
-      "statement": "保护与SEQ ID NO.1完全相同的序列，包含指定的单点突变变体",
-      "comment": "封闭式保护策略，覆盖明确的单突变体"
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "保护在SEQ ID NO:1基础上包含指定单点或组合突变且序列同一性≥80%的TdT变体",
+      "comment": "开放式+阈值保护"
     },
     {
       "wild_type": "SEQ_ID_NO_1",
       "rule": "conditional_protection",
-      "mutation": "Y178A_F186R/I210L_I228L/R335A_K337G/R335L_K337L/I339V_G340V/S456V_R457L",
+      "mutation": "Y178A/F186R/I210L/I228L/R335A/K337G/R335L/K337L/I339V/G340V/S456V/R457L",
       "mutation_logic": "(Y178A & F186R) | (I210L & I228L) | (R335A & K337G) | (R335L & K337L) | (I339V & G340V) | (S456V & R457L)",
-      "identity_logic": "seq_identity >= 100%",
-      "statement": "保护包含指定双突变组合的变体，每个组合必须两个突变同时存在",
-      "comment": "组合突变条件保护策略"
-    },
-    {
-      "wild_type": "SEQ_ID_NO_1",
-      "rule": "identity>99",
-      "mutation": "",
-      "mutation_logic": "NOT (any_excluded_mutations)",
-      "identity_logic": "seq_identity >= 99%",
-      "statement": "保护与SEQ ID NO.1具有至少99%同一性的序列",
-      "comment": "开放式保护策略，基于高序列同一性"
-    },
-    {
-      "wild_type": "SEQ_ID_NO_1",
-      "rule": "identity>95",
-      "mutation": "",
-      "mutation_logic": "NOT (any_excluded_mutations)",
-      "identity_logic": "seq_identity >= 95%",
-      "statement": "保护与SEQ ID NO.1具有至少95%同一性的序列",
-      "comment": "较宽泛的开放式保护策略"
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "保护在SEQ ID NO:1基础上包含指定成对突变且序列同一性≥80%的TdT变体",
+      "comment": "组合突变+阈值保护"
     },
     {
       "wild_type": "SEQ_ID_NO_1",
       "rule": "conditional_protection",
       "mutation": "X1X2X3X4RX5GX6NX7X8X9DX10",
-      "mutation_logic": "(X1 in [A,I,L,V,P,Q,T,K,E]) & (X2 in [G,L,V,F,Y,C,H,R,D]) & (X3 in [A,I,L,V,P,Q,T,K,E]) & (X4 in [G,L,V,F,Y,C,H,R,D]) & (X5 in [A,I,L,V,P,Q,T,K,E]) & (X6 in [G,L,V,F,Y,C,H,R,D]) & (X7 in [A,I,L,V,P,Q,T,K,E]) & (X8 in [G,L,V,F,Y,C,H,R,D]) & (X9 in [A,I,L,V,P,Q,T,K,E]) & (X10 in [G,L,V,F,Y,C,H,R,D])",
-      "identity_logic": "seq_identity >= 100%",
-      "statement": "保护在330-343位半保守区域中具有特定残基组合的变体",
-      "comment": "基于特定结构域的保护策略"
+      "mutation_logic": "((X1 in [A,I,L,V,P,Q,T,K,E]) & (X2 in [G,L,V,F,Y,C,H,R,D]) & (X3 in [A,I,L,V,P,Q,T,K,E]) & (X4 in [G,L,V,F,Y,C,H,R,D]) & (X5 in [A,I,L,V,P,Q,T,K,E]) & (X6 in [G,L,V,F,Y,C,H,R,D]) & (X7 in [A,I,L,V,P,Q,T,K,E]) & (X8 in [G,L,V,F,Y,C,H,R,D]) & (X9 in [A,I,L,V,P,Q,T,K,E]) & (X10 in [G,L,V,F,Y,C,H,R,D]))",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "保护在330-343位半保守区发生符合指定残基类型突变且序列同一性≥80%的TdT变体",
+      "comment": "区域模式+阈值保护"
     },
     {
       "wild_type": "SEQ_ID_NO_1",
       "rule": "conditional_protection",
       "mutation": "ALLX1X2X3X4X5X6QFG",
-      "mutation_logic": "(X1 in [A,I,L,V,P,Q,T,K,E]) & (X2 in [G,L,V,F,Y,C,H,R,D]) & (X3 in [A,I,L,V,P,Q,T,K,E]) & (X4 in [G,L,V,F,Y,C,H,R,D]) & (X5 in [A,I,L,V,P,Q,T,K,E]) & (X6 in [G,L,V,F,Y,C,H,R,D])",
-      "identity_logic": "seq_identity >= 100%",
-      "statement": "保护在449-460位半保守区域中具有特定残基组合的变体",
-      "comment": "基于特定结构域的保护策略"
+      "mutation_logic": "((X1 in [A,I,L,V,P,Q,T,K,E]) & (X2 in [G,L,V,F,Y,C,H,R,D]) & (X3 in [A,I,L,V,P,Q,T,K,E]) & (X4 in [G,L,V,F,Y,C,H,R,D]) & (X5 in [A,I,L,V,P,Q,T,K,E]) & (X6 in [G,L,V,F,Y,C,H,R,D]))",
+      "identity_logic": "seq_identity >= 80%",
+      "statement": "保护在449-460位半保守区发生符合指定残基类型突变且序列同一性≥80%的TdT变体",
+      "comment": "区域模式+阈值保护"
     }
   ]
 }

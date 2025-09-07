@@ -43,6 +43,9 @@ class ClaimsExtractor:
             logger.warning("页面数据为空")
             return None
         
+        # 保存完整页面数据供后续使用
+        self._all_pages_data = pages_data
+        
         # 找到权利要求书章节
         claims_pages = self._find_claims_pages(pages_data)
         
@@ -357,7 +360,8 @@ class ClaimsExtractor:
         pdf_name = Path(pdf_path).name
         
         # 尝试从内容中提取专利信息
-        patent_info = self._extract_patent_info(content)
+        pages_data = getattr(self, '_all_pages_data', None)
+        patent_info = self._extract_patent_info(content, pages_data)
         
         markdown_content = f"""# 权利要求书
 
@@ -378,12 +382,13 @@ class ClaimsExtractor:
 """
         return markdown_content
     
-    def _extract_patent_info(self, content: str) -> dict:
+    def _extract_patent_info(self, content: str, pages_data: Optional[List[Dict]] = None) -> dict:
         """
         从内容中提取专利基本信息。
         
         Args:
             content: 权利要求书内容
+            pages_data: PDF页面数据列表，用于从页眉中提取专利号
             
         Returns:
             包含专利信息的字典
@@ -394,12 +399,15 @@ class ClaimsExtractor:
             'extract_time': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
         
-        # 尝试提取专利号
-        patent_match = re.search(r'CN\s*\d+\s*[A-Z]', content)
-        if patent_match:
-            info['patent_number'] = patent_match.group().replace(' ', '')
-        else:
-            info['patent_number'] = '未识别'
+        # 尝试从页面数据中提取专利号（优先从页眉）
+        patent_number = self._extract_patent_number_from_pages(pages_data)
+        if not patent_number:
+            # 备用方案：从内容中提取专利号
+            patent_match = re.search(r'CN\s*\d+\s*[A-Z]', content)
+            if patent_match:
+                patent_number = patent_match.group().replace(' ', '')
+        
+        info['patent_number'] = patent_number if patent_number else '未识别'
         
         # 尝试确定页面范围（从页面数据中推断）
         if hasattr(self, '_source_pages') and self._source_pages:
@@ -412,6 +420,67 @@ class ClaimsExtractor:
             info['pages'] = '未知页面范围'
         
         return info
+    
+    def _extract_patent_number_from_pages(self, pages_data: Optional[List[Dict]]) -> Optional[str]:
+        """
+        从页面数据中提取专利号。
+        
+        Args:
+            pages_data: PDF页面数据列表
+            
+        Returns:
+            专利号字符串，如果未找到则返回 None
+        """
+        if not pages_data:
+            return None
+        
+        # 定义专利号的正则表达式模式
+        # 支持 CN118284690A, CN 118284690 A, CN202210107337 等格式
+        patent_patterns = [
+            r'CN\s*(\d{9,})\s*[A-Z]+',     # CN118284690A 格式
+            r'CN\s*(\d{12})',              # CN202210107337 格式
+            r'申请公布号[：:]\s*CN\s*(\d+)\s*[A-Z]*',  # 申请公布号: CN118284690A
+        ]
+        
+        # 遍历所有页面，查找专利号
+        for page_data in pages_data:
+            # 检查页眉文本
+            header_text = page_data.get("header_text", "")
+            if header_text:
+                for pattern in patent_patterns:
+                    match = re.search(pattern, header_text)
+                    if match:
+                        # 重构完整的专利号
+                        number = match.group(1) if match.groups() else match.group()
+                        # 根据数字长度判断格式
+                        if len(number) >= 9:
+                            # 如果是9位以上，可能需要添加字母后缀
+                            full_match = re.search(r'CN\s*' + number + r'\s*([A-Z]+)', header_text)
+                            if full_match:
+                                return f"CN {number} {full_match.group(1)}"
+                            else:
+                                return f"CN {number}"
+                        else:
+                            return f"CN {number}"
+            
+            # 检查页面主要文本内容
+            page_content = page_data.get("content", "")
+            if page_content:
+                for pattern in patent_patterns:
+                    match = re.search(pattern, page_content)
+                    if match:
+                        number = match.group(1) if match.groups() else match.group()
+                        if len(number) >= 9:
+                            full_match = re.search(r'CN\s*' + number + r'\s*([A-Z]+)', page_content)
+                            if full_match:
+                                return f"CN {number} {full_match.group(1)}"
+                            else:
+                                return f"CN {number}"
+                        else:
+                            return f"CN {number}"
+        
+        # 如果上述方法都失败，尝试从文件名中提取
+        return None
     
     def _prepare_text_content(self, content: str, pdf_path: str) -> str:
         """

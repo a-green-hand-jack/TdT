@@ -1,4 +1,4 @@
-"""
+""",.
 权利要求书内容提取模块
 
 负责从解析后的PDF页面中提取并格式化权利要求书内容。
@@ -214,7 +214,7 @@ class ClaimsExtractor:
         
         # 仅进行权利要求编号的分离，使用更简单的方法
         # 直接用正则表达式在权利要求编号前添加标题
-        content = re.sub(r'(\n|^)(\d+)\.\s*', r'\1\n## \2. ', content)
+        content = re.sub(r'(\n|^)(\d+)\.\s*', r'\1\n \2. ', content)
         
         # 清理多余的空行
         content = re.sub(r'\n{3,}', '\n\n', content)
@@ -249,7 +249,13 @@ class ClaimsExtractor:
             if re.match(r'^\d{4}$', line_stripped):
                 continue
             
-            clean_lines.append(line)
+            # 清理行内的页眉信息 - 移除嵌入在文本中的页眉
+            # 匹配模式: 权利要求书 + 专利号 + 页数信息 (可能前面有数字)
+            cleaned_line = re.sub(r'(\d+\s+)?权\s*利\s*要\s*求\s*书\s+CN\s+\w+\s+A?\s*\d+/\d+\s*页\s*', '', line)
+            
+            # 如果清理后的行不为空，添加到结果中
+            if cleaned_line.strip():
+                clean_lines.append(cleaned_line)
         
         return '\n'.join(clean_lines)
     

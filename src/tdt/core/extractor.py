@@ -223,7 +223,7 @@ class ClaimsExtractor:
     
     def _light_clean_headers(self, content: str) -> str:
         """
-        轻度清理页眉信息，只移除明显的页眉行。
+        轻度清理页眉和页脚信息，移除明显的页眉行和页脚数字。
         
         Args:
             content: 原始内容
@@ -237,8 +237,16 @@ class ClaimsExtractor:
         for line in lines:
             line_stripped = line.strip()
             
-            # 移除页眉行：仅移除完全匹配的页眉标题行
+            # 移除完全匹配的页眉标题行
             if line_stripped == '权 利 要 求 书':
+                continue
+            
+            # 移除页眉行格式："权 利 要 求 书 CN 118284690 A 1/29 页" 这样的行
+            if re.match(r'^权\s*利\s*要\s*求\s*书\s+CN\s+\w+\s+A?\s*\d+/\d+\s*页\s*$', line_stripped):
+                continue
+            
+            # 移除单独出现的4位数字页脚（如3300），但保留权利要求编号和其它内容
+            if re.match(r'^\d{4}$', line_stripped):
                 continue
             
             clean_lines.append(line)

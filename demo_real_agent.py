@@ -9,6 +9,10 @@ import json
 import os
 import sys
 from pathlib import Path
+from dotenv import load_dotenv
+
+# 加载 .env 文件中的环境变量
+load_dotenv()
 
 # 添加项目路径
 sys.path.insert(0, str(Path(__file__).parent / "src"))
@@ -23,12 +27,12 @@ def demo_real_agent_system():
     print("🧬 TDT专利规则生成Agent - 真实数据演示")
     print("=" * 70)
     
-    # 读取API密钥
-    with open('qwen_key', 'r') as f:
-        api_key = f.read().strip()
-    
-    # 设置环境变量
-    os.environ['QWEN_API_KEY'] = api_key
+    # 从环境变量读取API密钥
+    api_key = os.getenv('QWEN_API_KEY')
+    if not api_key:
+        print("❌ 错误: 未找到 QWEN_API_KEY 环境变量")
+        print("💡 请在 .env 文件中设置 QWEN_API_KEY")
+        return
     
     try:
         # 1. 初始化数据加载器和LLM Agent

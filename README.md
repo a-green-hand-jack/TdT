@@ -100,9 +100,9 @@ uv pip install -e .
 
 #### LLM服务配置（智能规则提取功能）
 
-创建 `.env` 文件配置LLM服务：
-
-```bash
+**配置LLM服务**
+在`.env`文件中配置LLM服务，以下是示例：
+```text
 # 对于Qwen Plus（推荐）
 QWEN_API_KEY=your-api-key-here
 QWEN_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
@@ -113,8 +113,38 @@ OPENAI_BASE_URL=https://api.openai.com/v1
 ```
 
 **获取API密钥：**
+
 - Qwen：访问 [阿里云百炼平台](https://bailian.console.aliyun.com/)
 - OpenAI：访问 [OpenAI Platform](https://platform.openai.com/)
+
+
+
+## 🚀 快速开始
+
+### 核心工作流程（3步完成）
+
+```bash
+# 1️⃣ 设置API密钥（获取Qwen API密钥：https://bailian.console.aliyun.com/）
+export QWEN_API_KEY="your-api-key-here"
+export QWEN_BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1"
+
+# 2️⃣ 处理序列文件（如果还没有JSON格式）
+uv run tdt-seq process examples/seq/CN202210107337.FASTA -o output/sequences/CN202210107337.json
+
+# 3️⃣ 提取权利要求书
+uv run tdt-extract extract examples/pdf/CN202210107337.pdf -o output/markdowns/ -f markdown
+
+# 4️⃣ 生成专利保护规则
+uv run tdt-rules generate-rules \
+  output/markdowns/CN202210107337_claims.md \
+  output/sequences/CN202210107337.json \
+  "Patents/patent rules_rules.json" \
+  -o output/strategy \
+  --export-markdown
+
+# 🎉 完成！查看结果：
+# 📄 output/strategy/CN_202210107337_rules.json  (简化规则JSON)  
+# 📋 output/strategy/CN_202210107337_rules.md    (详细分析报告)
 ```
 
 ### 使用示例
@@ -156,29 +186,80 @@ uv run tdt-seq formats
 uv run tdt-seq convert examples/seq/CN118284690A.csv --pretty
 ```
 
-##### 智能规则提取（🆕 新功能）
+##### 智能规则提取
+
+###### 1. 环境配置
+
+```bash
+# 设置Qwen API密钥（推荐）
+export QWEN_API_KEY="your-api-key-here"
+export QWEN_BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1"
+
+# 或者使用OpenAI兼容服务
+export OPENAI_API_KEY="your-openai-key"
+export OPENAI_BASE_URL="https://api.openai.com/v1"
+```
+
+###### 2. 基础功能测试
 
 ```bash
 # 测试LLM连接
 uv run tdt-rules test-llm
 
-# 生成专利保护规则（完整流程）
-uv run tdt-rules generate \
-  --claims examples/md/CN202210107337_claims.md \
-  --sequences examples/seq/CN202210107337.json \
-  --existing-rules Patents/patent_rules_rules.json \
-  --output output/strategy
+# 显示工具信息
+uv run tdt-rules info
 
-# 使用详细日志
-uv run tdt-rules generate \
-  --claims examples/md/CN202210107337_claims.md \
-  --sequences examples/seq/CN202210107337.json \
-  --existing-rules Patents/patent_rules_rules.json \
-  --output output/strategy \
-  --verbose
+# 查看帮助信息
+uv run tdt-rules --help
+```
 
-# 快速测试（使用示例数据）
-uv run python test_cn202210107337.py
+###### 3. 完整工作流程示例
+
+```bash
+# 步骤1：从PDF提取权利要求书
+uv run tdt-extract extract examples/pdf/CN202210107337.pdf -o examples/md -f markdown
+
+# 步骤2：处理序列文件为标准JSON
+uv run tdt-seq process examples/seq/CN202210107337.FASTA -o output/sequences/CN202210107337.json
+
+# 步骤3：生成专利保护规则（核心功能）
+uv run tdt-rules generate-rules \
+  output/markdowns/CN202210107337_claims.md \
+  output/sequences/CN202210107337.json \
+  "Patents/patent rules_rules.json" \
+  -o output/strategy \
+  --export-markdown
+
+# 输出结果：
+# ✅ output/strategy/CN_202210107337_rules.json  (简化规则JSON)
+# ✅ output/strategy/CN_202210107337_rules.md    (分析报告)
+```
+
+###### 4. 其他实用功能
+
+```bash
+# Excel规则转换
+uv run tdt-rules convert-excel "Patents/patent rules.xlsx" \
+  -o output/strategy/converted_rules.json \
+  --stats
+
+# 规则文件分析
+uv run tdt-rules analyze-rules output/strategy/converted_rules.json
+
+# 批量处理序列文件
+uv run tdt-seq batch examples/seq/ output/sequences/ --recursive
+```
+
+###### 5. 演示模式（无API密钥）
+
+```bash
+# 即使没有API密钥，工具也会在演示模式下运行
+# 生成示例规则用于测试
+uv run tdt-rules generate-rules \
+  output/markdownsCN202210107337_claims.md \
+  output/sequences/CN202210107337.json \
+  "Patents/patent rules_rules.json" \
+  -o output/demo
 ```
 
 #### 输出示例
@@ -242,27 +323,108 @@ uv run python test_cn202210107337.py
 
 ```json
 {
-  "patent_number": "CN 116555216 A",
+  "patent_number": "CN 202210107337",
   "group": 1,
   "rules": [
     {
       "wild_type": "SEQ_ID_NO_1",
-      "rule": "conditional_protection",
-      "mutation": "Y178A/F186R/I210L/I228L",
-      "mutation_logic": "(Y178A & F186R) | (I210L & I228L)",
+      "rule": "identity>95",
+      "mutation": "Y178A/F186R/I210L/V211A",
+      "mutation_logic": "(Y178A & F186R & I210L & V211A)",
       "identity_logic": "seq_identity >= 95%",
-      "statement": "保护包含特定突变组合且序列同一性≥95%的TdT变体",
-      "comment": "封闭式保护：精确突变组合"
+      "statement": "保护与SEQ ID NO:1具有至少95%同一性且包含Y178A、F186R、I210L、V211A突变的工程化末端脱氧核苷酸转移酶",
+      "comment": "核心保护规则，基于固定突变组合和序列同一性下限"
+    },
+    {
+      "wild_type": "SEQ_ID_NO_1",
+      "rule": "conditional",
+      "mutation": "Y178A/F186R/I210L/V211A/K220E/A225V/D230N/R235K",
+      "mutation_logic": "(Y178A & F186R & I210L & V211A) & (K220E | A225V | D230N | R235K)",
+      "identity_logic": "seq_identity >= 95%",
+      "statement": "保护包含核心突变和可选突变的TdT变体",
+      "comment": "条件式保护策略，基础突变+可选突变"
     }
   ]
 }
 ```
 
 **关键特征：**
-- 🎯 **简化格式**：与现有规则JSON兼容
+
+- 🎯 **简化格式**：与现有规则JSON完全兼容
 - ⚙️ **逻辑表达式**：`&` (AND), `|` (OR), `!` (NOT), `()` (分组)
 - 🔬 **突变模式**：标准格式 `Y178A` (原氨基酸+位置+新氨基酸)
-- 📊 **保护类型**：`identical`, `identity>X%`, `conditional_protection`
+- 📊 **保护类型**：`identical`, `identity>X%`, `conditional`, `conserved_region_protection`
+- 🤖 **AI生成**：基于真实LLM分析，理解专利保护逻辑
+
+##### 实际输出效果展示
+
+使用上述命令处理 `CN202210107337` 专利后的终端输出：
+
+```
+🧬 开始生成专利保护规则
+权利要求书: output/markdownsCN202210107337_claims.md
+序列文件: output/sequences/CN202210107337.json
+现有规则: Patents/patent rules_rules.json
+
+✅ LLM连接成功
+🔍 分析专利数据...
+📄 导出简化JSON格式规则...
+📝 导出简化Markdown格式文档...
+
+✅ 规则生成完成！
+📊 分析结果:
+  专利号: CN 202210107337
+  保护规则数: 4
+  复杂度级别: ComplexityLevel.MODERATE
+  分析置信度: 80.00%
+
+📁 输出文件:
+  JSON规则: output/strategy/CN_202210107337_rules.json
+  Markdown文档: output/strategy/CN_202210107337_rules.md
+```
+
+生成的文件将包含：
+
+- **简洁高效**：只生成必要的JSON和Markdown文件
+- **逻辑清晰**：使用数学逻辑表达式描述复杂保护条件
+- **AI驱动**：基于真实LLM理解的专利保护分析
+
+## ❓ 常见问题 (FAQ)
+
+### Q1: 如何获取Qwen API密钥？
+
+**A**: 访问 [阿里云百炼平台](https://bailian.console.aliyun.com/)，注册并创建API密钥。
+
+### Q2: 没有API密钥可以使用吗？
+
+**A**: 可以！工具会自动进入演示模式，生成示例规则用于测试。
+
+### Q3: 支持哪些序列文件格式？
+
+**A**: 支持FASTA (.fasta, .fa) 和CSV (.csv) 格式，自动识别分子类型（蛋白质/DNA/RNA）。
+
+### Q4: 生成的规则格式是什么？
+
+**A**: 简化JSON格式，与现有规则兼容，使用逻辑表达式描述突变规则。
+
+### Q5: 处理大批量文件怎么办？
+
+**A**: 使用批量处理命令：
+
+```bash
+uv run tdt-seq batch input_dir/ output_dir/ --recursive
+```
+
+### Q6: 如何解读逻辑表达式？
+
+**A**:
+
+- `&` (AND): 同时满足
+- `|` (OR): 满足任一条件
+- `!` (NOT): 排除条件
+- `()`: 逻辑分组
+
+例如：`(Y178A & F186R) | (I210L & I228L)` 表示"(Y178A和F186R同时突变) 或者 (I210L和I228L同时突变)"。
 
 ## 📈 项目进展时间线
 
@@ -353,7 +515,7 @@ uv run python test_cn202210107337.py
   - 简化JSON和Markdown自动导出 ✓
   - 容错处理确保文件始终生成 ✓
   - 时间戳管理和结果索引系统 ✓
-  - 命令行工具`tdt-rules`开发完成 ✓
+  - 命令行工具 `tdt-rules`开发完成 ✓
 - ✅ **完整系统测试**
   - CN202210107337小数据集测试成功 ✓
   - 数据加载→LLM分析→规则生成→文件导出完整流程验证 ✓
@@ -432,7 +594,6 @@ src/tdt/
    - 专利保护范围识别和逻辑表达式生成
    - 多层JSON解析容错机制，确保稳定输出
    - 与现有规则格式兼容的简化输出
-
 8. **CLI接口**
 
    - `tdt-extract`：PDF权利要求书提取工具

@@ -10,6 +10,10 @@ from pathlib import Path
 from typing import Optional
 
 import click
+from dotenv import load_dotenv
+
+# 加载 .env 文件中的环境变量
+load_dotenv()
 
 from tdt.core.excel_converter import ExcelToJsonConverter
 

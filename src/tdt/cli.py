@@ -9,6 +9,10 @@ from pathlib import Path
 from typing import List, Optional
 
 import click
+from dotenv import load_dotenv
+
+# 加载 .env 文件中的环境变量
+load_dotenv()
 
 from tdt import extract_claims_from_pdf
 from tdt.core.parser import PDFParser

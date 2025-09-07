@@ -25,3 +25,4 @@ Patents/
 
 # 忽略qwen_key
 qwen_key
+.env
